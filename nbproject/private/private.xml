@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/gabri/Dropbox/Projetos%20NetBeans/Carona/web/index.xhtml</file>
-            <file>file:/C:/Users/gabri/Dropbox/Projetos%20NetBeans/Carona/src/java/model/Account.java</file>
-            <file>file:/C:/Users/gabri/Dropbox/Projetos%20NetBeans/Carona/src/java/view/EmProvider.java</file>
-            <file>file:/C:/Users/gabri/Dropbox/Projetos%20NetBeans/Carona/src/java/view/AccountManagedBean.java</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/web/addAccounts.xhtml</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/web/NavBar.xhtml</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/web/ManageUserAccounts.xhtml</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/web/EditAccounts.xhtml</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/src/java/view/UserAccountManagedBean.java</file>
+            <file>file:/E:/Prefeitura/Projetos/Caronas/Caronas/web/HeadIncludesPublic.xhtml</file>
         </group>
     </open-files>
 </project-private>
