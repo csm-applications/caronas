@@ -9,7 +9,7 @@ import model.Carro;
 import model.Tarefa;
 import model.UserAccount;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-06T11:09:00")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-06T11:15:38")
 @StaticMetamodel(Viagem.class)
 public class Viagem_ { 
 
