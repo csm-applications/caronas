@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -57,11 +55,8 @@ public class UserAccount implements Serializable {
     @Basic(optional = false)
     @Column(name = "email")
     private String email;
-    @JoinTable(name = "user_account_has_viagem", joinColumns = {
-        @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")}, inverseJoinColumns = {
-        @JoinColumn(name = "viagem_id_viagem", referencedColumnName = "id_viagem")})
-    @ManyToMany
-    private List<Viagem> viagemList;
+    @ManyToMany(mappedBy = "userAccountList")
+    private List<Travel> travelList;
 
     public UserAccount() {
     }
@@ -128,12 +123,12 @@ public class UserAccount implements Serializable {
     }
 
     @XmlTransient
-    public List<Viagem> getViagemList() {
-        return viagemList;
+    public List<Travel> getTravelList() {
+        return travelList;
     }
 
-    public void setViagemList(List<Viagem> viagemList) {
-        this.viagemList = viagemList;
+    public void setTravelList(List<Travel> travelList) {
+        this.travelList = travelList;
     }
 
     @Override

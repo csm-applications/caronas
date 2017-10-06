@@ -5,30 +5,29 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Carona.Solidária</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <h:form>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="#">Carona.Solidária</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <h:form>
-
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
                         <p:commandLink styleClass="nav-link" value="Cadastrar" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
-
-                    </h:form>>
-                </li>
-                <li class="nav-item">
-                    <h:form>
-
+                    </li>
+                    <li class="nav-item">
                         <p:commandLink styleClass="nav-link" value="Lista" action="#{UserAccountManagedBean.gotoListUsers()}"/>
-
-                    </h:form>>
-
-                </li>
-            </ul>
-        </div>
-    </nav>
+                    </li>
+                    <li class="nav-item">
+                        <p:commandLink styleClass="nav-link" value="Cadastrar Viagem" action="#{travelManagedBean.gotoAddTravel()}"/>
+                    </li>
+                    <li>
+                        <p:commandLink styleClass="nav-link" value="Cadastrar Carro" action="#{CarManagedBean.gotoAddCars()}"/>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </h:form>
 </ui:composition>

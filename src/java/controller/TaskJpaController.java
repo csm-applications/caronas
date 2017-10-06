@@ -6,7 +6,6 @@
 package controller;
 
 import controller.exceptions.NonexistentEntityException;
-import controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -17,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import model.UserAccount;
+import model.Task;
 
 /**
  *
  * @author gabri
  */
-public class UserAccountJpaController implements Serializable {
+public class TaskJpaController implements Serializable {
 
-    public UserAccountJpaController(EntityManagerFactory emf) {
+    public TaskJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,31 +33,31 @@ public class UserAccountJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(UserAccount userAccount) throws PreexistingEntityException, Exception {
-        if (userAccount.getTravelList() == null) {
-            userAccount.setTravelList(new ArrayList<Travel>());
+    public void create(Task task) {
+        if (task.getTravelList() == null) {
+            task.setTravelList(new ArrayList<Travel>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Travel> attachedTravelList = new ArrayList<Travel>();
-            for (Travel travelListTravelToAttach : userAccount.getTravelList()) {
+            for (Travel travelListTravelToAttach : task.getTravelList()) {
                 travelListTravelToAttach = em.getReference(travelListTravelToAttach.getClass(), travelListTravelToAttach.getIdTravel());
                 attachedTravelList.add(travelListTravelToAttach);
             }
-            userAccount.setTravelList(attachedTravelList);
-            em.persist(userAccount);
-            for (Travel travelListTravel : userAccount.getTravelList()) {
-                travelListTravel.getUserAccountList().add(userAccount);
+            task.setTravelList(attachedTravelList);
+            em.persist(task);
+            for (Travel travelListTravel : task.getTravelList()) {
+                Task oldTaskIdTaskOfTravelListTravel = travelListTravel.getTaskIdTask();
+                travelListTravel.setTaskIdTask(task);
                 travelListTravel = em.merge(travelListTravel);
+                if (oldTaskIdTaskOfTravelListTravel != null) {
+                    oldTaskIdTaskOfTravelListTravel.getTravelList().remove(travelListTravel);
+                    oldTaskIdTaskOfTravelListTravel = em.merge(oldTaskIdTaskOfTravelListTravel);
+                }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findUserAccount(userAccount.getUserLogin()) != null) {
-                throw new PreexistingEntityException("UserAccount " + userAccount + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -66,41 +65,46 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public void edit(UserAccount userAccount) throws NonexistentEntityException, Exception {
+    public void edit(Task task) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UserAccount persistentUserAccount = em.find(UserAccount.class, userAccount.getUserLogin());
-            List<Travel> travelListOld = persistentUserAccount.getTravelList();
-            List<Travel> travelListNew = userAccount.getTravelList();
+            Task persistentTask = em.find(Task.class, task.getIdTask());
+            List<Travel> travelListOld = persistentTask.getTravelList();
+            List<Travel> travelListNew = task.getTravelList();
             List<Travel> attachedTravelListNew = new ArrayList<Travel>();
             for (Travel travelListNewTravelToAttach : travelListNew) {
                 travelListNewTravelToAttach = em.getReference(travelListNewTravelToAttach.getClass(), travelListNewTravelToAttach.getIdTravel());
                 attachedTravelListNew.add(travelListNewTravelToAttach);
             }
             travelListNew = attachedTravelListNew;
-            userAccount.setTravelList(travelListNew);
-            userAccount = em.merge(userAccount);
+            task.setTravelList(travelListNew);
+            task = em.merge(task);
             for (Travel travelListOldTravel : travelListOld) {
                 if (!travelListNew.contains(travelListOldTravel)) {
-                    travelListOldTravel.getUserAccountList().remove(userAccount);
+                    travelListOldTravel.setTaskIdTask(null);
                     travelListOldTravel = em.merge(travelListOldTravel);
                 }
             }
             for (Travel travelListNewTravel : travelListNew) {
                 if (!travelListOld.contains(travelListNewTravel)) {
-                    travelListNewTravel.getUserAccountList().add(userAccount);
+                    Task oldTaskIdTaskOfTravelListNewTravel = travelListNewTravel.getTaskIdTask();
+                    travelListNewTravel.setTaskIdTask(task);
                     travelListNewTravel = em.merge(travelListNewTravel);
+                    if (oldTaskIdTaskOfTravelListNewTravel != null && !oldTaskIdTaskOfTravelListNewTravel.equals(task)) {
+                        oldTaskIdTaskOfTravelListNewTravel.getTravelList().remove(travelListNewTravel);
+                        oldTaskIdTaskOfTravelListNewTravel = em.merge(oldTaskIdTaskOfTravelListNewTravel);
+                    }
                 }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                String id = userAccount.getUserLogin();
-                if (findUserAccount(id) == null) {
-                    throw new NonexistentEntityException("The userAccount with id " + id + " no longer exists.");
+                Integer id = task.getIdTask();
+                if (findTask(id) == null) {
+                    throw new NonexistentEntityException("The task with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -111,24 +115,24 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public void destroy(String id) throws NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UserAccount userAccount;
+            Task task;
             try {
-                userAccount = em.getReference(UserAccount.class, id);
-                userAccount.getUserLogin();
+                task = em.getReference(Task.class, id);
+                task.getIdTask();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The userAccount with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The task with id " + id + " no longer exists.", enfe);
             }
-            List<Travel> travelList = userAccount.getTravelList();
+            List<Travel> travelList = task.getTravelList();
             for (Travel travelListTravel : travelList) {
-                travelListTravel.getUserAccountList().remove(userAccount);
+                travelListTravel.setTaskIdTask(null);
                 travelListTravel = em.merge(travelListTravel);
             }
-            em.remove(userAccount);
+            em.remove(task);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -137,19 +141,19 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public List<UserAccount> findUserAccountEntities() {
-        return findUserAccountEntities(true, -1, -1);
+    public List<Task> findTaskEntities() {
+        return findTaskEntities(true, -1, -1);
     }
 
-    public List<UserAccount> findUserAccountEntities(int maxResults, int firstResult) {
-        return findUserAccountEntities(false, maxResults, firstResult);
+    public List<Task> findTaskEntities(int maxResults, int firstResult) {
+        return findTaskEntities(false, maxResults, firstResult);
     }
 
-    private List<UserAccount> findUserAccountEntities(boolean all, int maxResults, int firstResult) {
+    private List<Task> findTaskEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(UserAccount.class));
+            cq.select(cq.from(Task.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -161,20 +165,20 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public UserAccount findUserAccount(String id) {
+    public Task findTask(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(UserAccount.class, id);
+            return em.find(Task.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUserAccountCount() {
+    public int getTaskCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<UserAccount> rt = cq.from(UserAccount.class);
+            Root<Task> rt = cq.from(Task.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

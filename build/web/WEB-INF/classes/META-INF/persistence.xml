@@ -6,6 +6,9 @@
     <class>model.Carro</class>
     <class>model.Viagem</class>
     <class>model.Tarefa</class>
+    <class>model.Task</class>
+    <class>model.Travel</class>
+    <class>model.Car</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/carona?zeroDateTimeBehavior=convertToNull"/>

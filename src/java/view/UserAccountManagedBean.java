@@ -8,7 +8,7 @@ import controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name="UserAccountManagedBean")
+@ManagedBean(name = "UserAccountManagedBean")
 @SessionScoped
 public class UserAccountManagedBean {
 
@@ -18,19 +18,19 @@ public class UserAccountManagedBean {
 
     public UserAccountManagedBean() {
     }
-    
+
     //gotos
-    public String gotoAddAccounts(){
+    public String gotoAddAccounts() {
         ActualUserAccount = new UserAccount();
         return "/public/manageAccounts/addAccounts.xhtml?faces-redirect=true";
     }
-    
-    public String gotoListUsers(){
+
+    public String gotoListUsers() {
         loadUserAccounts();
         return "/public/manageAccounts/ManageUserAccounts.xhtml?faces-redirect=true";
     }
-    
-    public String gotoEditUsers(){
+
+    public String gotoEditUsers() {
         return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
     }
 
@@ -41,13 +41,12 @@ public class UserAccountManagedBean {
     public String saveUserAccount() {
         try {
             controlUserAccount.create(ActualUserAccount);
-            gotoListUsers();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return gotoListUsers();
     }
-  
+
     public String editUserAccount() {
         try {
             controlUserAccount.edit(ActualUserAccount);
