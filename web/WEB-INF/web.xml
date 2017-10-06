@@ -15,6 +15,6 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>addAccounts.xhtml</welcome-file>
+        <welcome-file>/public/manageAccounts/addAccounts.xhtml</welcome-file>
     </welcome-file-list>
 </web-app>

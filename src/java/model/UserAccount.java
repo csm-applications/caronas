@@ -6,30 +6,35 @@
 package model;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author USER
+ * @author gabri
  */
 @Entity
 @Table(name = "user_account")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u"),
-    @NamedQuery(name = "UserAccount.findByUserLogin", query = "SELECT u FROM UserAccount u WHERE u.userLogin = :userLogin"),
-    @NamedQuery(name = "UserAccount.findByPassword", query = "SELECT u FROM UserAccount u WHERE u.password = :password"),
-    @NamedQuery(name = "UserAccount.findByUserName", query = "SELECT u FROM UserAccount u WHERE u.userName = :userName"),
-    @NamedQuery(name = "UserAccount.findByPhone", query = "SELECT u FROM UserAccount u WHERE u.phone = :phone"),
-    @NamedQuery(name = "UserAccount.findBySector", query = "SELECT u FROM UserAccount u WHERE u.sector = :sector"),
-    @NamedQuery(name = "UserAccount.findByEmail", query = "SELECT u FROM UserAccount u WHERE u.email = :email")})
+    @NamedQuery(name = "UserAccount.findAll", query = "SELECT u FROM UserAccount u")
+    , @NamedQuery(name = "UserAccount.findByUserLogin", query = "SELECT u FROM UserAccount u WHERE u.userLogin = :userLogin")
+    , @NamedQuery(name = "UserAccount.findByPassword", query = "SELECT u FROM UserAccount u WHERE u.password = :password")
+    , @NamedQuery(name = "UserAccount.findByUserName", query = "SELECT u FROM UserAccount u WHERE u.userName = :userName")
+    , @NamedQuery(name = "UserAccount.findByPhone", query = "SELECT u FROM UserAccount u WHERE u.phone = :phone")
+    , @NamedQuery(name = "UserAccount.findBySector", query = "SELECT u FROM UserAccount u WHERE u.sector = :sector")
+    , @NamedQuery(name = "UserAccount.findByEmail", query = "SELECT u FROM UserAccount u WHERE u.email = :email")})
 public class UserAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,6 +57,11 @@ public class UserAccount implements Serializable {
     @Basic(optional = false)
     @Column(name = "email")
     private String email;
+    @JoinTable(name = "user_account_has_viagem", joinColumns = {
+        @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")}, inverseJoinColumns = {
+        @JoinColumn(name = "viagem_id_viagem", referencedColumnName = "id_viagem")})
+    @ManyToMany
+    private List<Viagem> viagemList;
 
     public UserAccount() {
     }
@@ -115,6 +125,15 @@ public class UserAccount implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @XmlTransient
+    public List<Viagem> getViagemList() {
+        return viagemList;
+    }
+
+    public void setViagemList(List<Viagem> viagemList) {
+        this.viagemList = viagemList;
     }
 
     @Override

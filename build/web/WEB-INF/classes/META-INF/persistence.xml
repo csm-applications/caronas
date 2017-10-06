@@ -3,12 +3,15 @@
   <persistence-unit name="CaronaPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>model.UserAccount</class>
+    <class>model.Carro</class>
+    <class>model.Viagem</class>
+    <class>model.Tarefa</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/carona?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="86111411"/>
+      <property name="javax.persistence.jdbc.password" value="2601"/>
     </properties>
   </persistence-unit>
 </persistence>

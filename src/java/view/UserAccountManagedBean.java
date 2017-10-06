@@ -22,16 +22,16 @@ public class UserAccountManagedBean {
     //gotos
     public String gotoAddAccounts(){
         ActualUserAccount = new UserAccount();
-        return "addAccounts.xhtml?faces-redirect=true";
+        return "/public/manageAccounts/addAccounts.xhtml?faces-redirect=true";
     }
     
     public String gotoListUsers(){
         loadUserAccounts();
-        return "ManageUserAccounts.xhtml?faces-redirect=true";
+        return "/public/manageAccounts/ManageUserAccounts.xhtml?faces-redirect=true";
     }
     
     public String gotoEditUsers(){
-        return "EditAccounts.xhtml?faces-redirect=true";
+        return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
     }
 
     public void loadUserAccounts() {
@@ -77,7 +77,4 @@ public class UserAccountManagedBean {
     public void setListOfUserAccounts(ArrayList<UserAccount> listOfUserAccounts) {
         this.listOfUserAccounts = listOfUserAccounts;
     }
-
- 
-
 }

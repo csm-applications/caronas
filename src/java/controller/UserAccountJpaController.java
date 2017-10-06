@@ -8,18 +8,20 @@ package controller;
 import controller.exceptions.NonexistentEntityException;
 import controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import model.Viagem;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import model.UserAccount;
 
 /**
  *
- * @author USER
+ * @author gabri
  */
 public class UserAccountJpaController implements Serializable {
 
@@ -33,11 +35,24 @@ public class UserAccountJpaController implements Serializable {
     }
 
     public void create(UserAccount userAccount) throws PreexistingEntityException, Exception {
+        if (userAccount.getViagemList() == null) {
+            userAccount.setViagemList(new ArrayList<Viagem>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<Viagem> attachedViagemList = new ArrayList<Viagem>();
+            for (Viagem viagemListViagemToAttach : userAccount.getViagemList()) {
+                viagemListViagemToAttach = em.getReference(viagemListViagemToAttach.getClass(), viagemListViagemToAttach.getIdViagem());
+                attachedViagemList.add(viagemListViagemToAttach);
+            }
+            userAccount.setViagemList(attachedViagemList);
             em.persist(userAccount);
+            for (Viagem viagemListViagem : userAccount.getViagemList()) {
+                viagemListViagem.getUserAccountList().add(userAccount);
+                viagemListViagem = em.merge(viagemListViagem);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findUserAccount(userAccount.getUserLogin()) != null) {
@@ -56,7 +71,29 @@ public class UserAccountJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            UserAccount persistentUserAccount = em.find(UserAccount.class, userAccount.getUserLogin());
+            List<Viagem> viagemListOld = persistentUserAccount.getViagemList();
+            List<Viagem> viagemListNew = userAccount.getViagemList();
+            List<Viagem> attachedViagemListNew = new ArrayList<Viagem>();
+            for (Viagem viagemListNewViagemToAttach : viagemListNew) {
+                viagemListNewViagemToAttach = em.getReference(viagemListNewViagemToAttach.getClass(), viagemListNewViagemToAttach.getIdViagem());
+                attachedViagemListNew.add(viagemListNewViagemToAttach);
+            }
+            viagemListNew = attachedViagemListNew;
+            userAccount.setViagemList(viagemListNew);
             userAccount = em.merge(userAccount);
+            for (Viagem viagemListOldViagem : viagemListOld) {
+                if (!viagemListNew.contains(viagemListOldViagem)) {
+                    viagemListOldViagem.getUserAccountList().remove(userAccount);
+                    viagemListOldViagem = em.merge(viagemListOldViagem);
+                }
+            }
+            for (Viagem viagemListNewViagem : viagemListNew) {
+                if (!viagemListOld.contains(viagemListNewViagem)) {
+                    viagemListNewViagem.getUserAccountList().add(userAccount);
+                    viagemListNewViagem = em.merge(viagemListNewViagem);
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -85,6 +122,11 @@ public class UserAccountJpaController implements Serializable {
                 userAccount.getUserLogin();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The userAccount with id " + id + " no longer exists.", enfe);
+            }
+            List<Viagem> viagemList = userAccount.getViagemList();
+            for (Viagem viagemListViagem : viagemList) {
+                viagemListViagem.getUserAccountList().remove(userAccount);
+                viagemListViagem = em.merge(viagemListViagem);
             }
             em.remove(userAccount);
             em.getTransaction().commit();
