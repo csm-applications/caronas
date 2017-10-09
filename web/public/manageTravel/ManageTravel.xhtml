@@ -13,30 +13,30 @@
         <h:form>
             <div class="container">
                 <div style="margin-top: 9%">
-                    <h:dataTable styleClass="table table-bordered table-hover" value="#{UserAccountManagedBean.listOfUserAccounts}" var="acc">
+                    <h:dataTable styleClass="table table-bordered table-hover" value="#{travelManagedBean.listOfTravels}" var="trav">
                         <h:column >
-                            <f:facet name="header">Nome</f:facet>
-                            <h:outputText value="#{acc.userName}"/>
+                            <f:facet name="header">Destino</f:facet>
+                            <h:outputText value="#{trav.destination}"/>
                         </h:column>
                         <h:column >
-                            <f:facet name="header">Telefone</f:facet>
-                            <h:outputText value="#{acc.phone}"/>
+                            <f:facet name="header">Horario de Saída</f:facet>
+                            <h:outputText value="#{trav.timeInitial}"/>
                         </h:column>
                         <h:column>
-                            <f:facet name="header">Email</f:facet>
-                            <h:outputText value="#{acc.email}"/>
+                            <f:facet name="header">Horario de Chegada</f:facet>
+                            <h:outputText value="#{trav.timeEnd}"/>
                         </h:column>
                         <h:column >
-                            <f:facet name="header">Setor</f:facet>
-                            <h:outputText value="#{acc.sector}"/>
+                            <f:facet name="header">Carro</f:facet>
+                            <h:outputText value="#{trav.carPlate}"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Ações</f:facet>
-                            <p:commandButton update="@form" icon="ui-icon-close"  action="#{UserAccountManagedBean.destroyUserAccounts()}" >
-                                <f:setPropertyActionListener target="#{UserAccountManagedBean.actualUserAccount}" value="#{acc}"/>
+                            <p:commandButton update="@form" icon="ui-icon-close"  action="#{travelManagedBean.destroyTravels()}" >
+                                <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
                             </p:commandButton>
-                            <p:commandButton update="@form" icon="ui-icon-pencil"  action="#{UserAccountManagedBean.gotoEditUsers()}" >
-                                <f:setPropertyActionListener target="#{UserAccountManagedBean.actualUserAccount}" value="#{acc}"/>
+                            <p:commandButton update="@form" icon="ui-icon-pencil"  action="#{travelManagedBean.editUserAccount()}" >
+                                <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
                             </p:commandButton>
                         </h:column>
                     </h:dataTable>

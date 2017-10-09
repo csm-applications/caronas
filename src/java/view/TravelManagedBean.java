@@ -5,8 +5,10 @@ import controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import model.Car;
 import model.Travel;
 import view.EmProvider;
+import view.CarManagedBean;
 
 @ManagedBean
 @SessionScoped
@@ -33,7 +35,7 @@ public class TravelManagedBean {
     public void loadTravels(){
         listOfTravels = new ArrayList(controlTravel.findTravelEntities());
     }
-
+    
     public String saveTravels() {
         try {
             controlTravel.create(actualTravel);

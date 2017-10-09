@@ -13,30 +13,22 @@
             <div class="starter-template" style="margin-top: 9%">
                 <h:form>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="user"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userLogin}"></h:inputText>
+                        <h:outputText styleClass="form-control" value="Destino"/>
+                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.destination}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="password"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.password}"></h:inputText>
+                        <h:outputText styleClass="form-control" value="Horario de Saída"/>
+                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.timeInitial}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="name"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userName}"></h:inputText>
+                        <h:outputText styleClass="form-control" value="Horario de Chegada"/>
+                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.timeEnd}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="phone number"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.phone}"></h:inputText>
+                        <h:outputText styleClass="form-control" value="Carro"/>
+                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.carPlate}"/>
                     </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="work sector"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.sector}"></h:inputText>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="email"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.email}"></h:inputText>
-                    </div>
-                    <h:commandButton styleClass="btn btn-primary" value="Salvar Alterações" action="#{UserAccountManagedBean.editUserAccount()}"></h:commandButton>
+                    <h:commandButton styleClass="btn btn-primary" value="Salvar Alterações" action="#{travelManagedBean.editUserAccount()}"/>
                 </h:form>
             </div>
         </div>

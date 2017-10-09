@@ -29,15 +29,15 @@
                         </h:selectOneMenu>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Modelo do Veículo"/>
+                        <h:outputLabel styleClass="form-control" value="Modelo do Veículo"/>
                         <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.model}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Placa"/>
+                        <h:outputLabel styleClass="form-control" value="Placa"/>
                         <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.plate}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Situação"/>
+                        <h:outputLabel styleClass="form-control" value="Situação"/>
                         <h:selectOneMenu styleClass="form-control" value="#{CarManagedBean.actualCar.situation}">
                             <f:selectItem itemLabel="Livre" itemValue="Livre"/>
                             <f:selectItem itemLabel="Ocupado" itemValue="Ocupado"/>

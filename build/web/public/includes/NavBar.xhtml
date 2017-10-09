@@ -14,17 +14,21 @@
 
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <p:commandLink styleClass="nav-link" value="Cadastrar" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
                     </li>
                     <li class="nav-item">
-                        <p:commandLink styleClass="nav-link" value="Lista" action="#{UserAccountManagedBean.gotoListUsers()}"/>
+                        <p:commandLink styleClass="nav-link" value="Lista de Usuarios" action="#{UserAccountManagedBean.gotoListUsers()}"/>
                     </li>
+                    
                     <li class="nav-item">
                         <p:commandLink styleClass="nav-link" value="Cadastrar Viagem" action="#{travelManagedBean.gotoAddTravel()}"/>
                     </li>
                     <li>
                         <p:commandLink styleClass="nav-link" value="Cadastrar Carro" action="#{CarManagedBean.gotoAddCars()}"/>
+                    </li>
+                    <li>
+                        <p:commandLink styleClass="nav-link" value="Listar Veiculos" action="#{CarManagedBean.gotoListCars()}"/>
                     </li>
                 </ul>
             </div>
