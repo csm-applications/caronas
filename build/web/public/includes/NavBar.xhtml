@@ -7,31 +7,45 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:form>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="#">Carona.Solidária</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <h:commandLink action="index.xhtml" class="navbar-brand" >
+                <h:graphicImage alt="carona" name="images/carona.png" class="imgFot" />
+            </h:commandLink>
 
-            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <p:commandLink styleClass="nav-link" value="Cadastrar" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
-                    </li>
-                    <li class="nav-item">
-                        <p:commandLink styleClass="nav-link" value="Lista de Usuarios" action="#{UserAccountManagedBean.gotoListUsers()}"/>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <p:commandLink styleClass="nav-link" value="Cadastrar Viagem" action="#{travelManagedBean.gotoAddTravel()}"/>
-                    </li>
-                    <li>
-                        <p:commandLink styleClass="nav-link" value="Cadastrar Carro" action="#{CarManagedBean.gotoAddCars()}"/>
-                    </li>
-                    <li>
-                        <p:commandLink styleClass="nav-link" value="Listar Veiculos" action="#{CarManagedBean.gotoListCars()}"/>
-                    </li>
-                </ul>
-            </div>
+            <c:choose>
+                <c:when test="#{UserAccountManagedBean.anyoneLoggedIn}">
+                    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                                <p:commandLink styleClass="nav-link" value="Cadastrar" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
+                            </li>
+                            <li class="nav-item">
+                                <p:commandLink styleClass="nav-link" value="Lista" action="#{UserAccountManagedBean.gotoListUsers()}"/>
+                            </li>
+                            <li class="nav-item">
+                                <p:commandLink styleClass="nav-link" value="Cadastrar Viagem" action="#{travelManagedBean.gotoAddTravel()}"/>
+                            </li>
+                            <li>
+                                <p:commandLink styleClass="nav-link" value="Cadastrar Carro" action="#{CarManagedBean.gotoAddCars()}"/>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li>
+                                <p:commandLink styleClass="nav-link" value="Sair" action="#{UserAccountManagedBean.logout()}"/>
+                            </li>
+                        </ul>
+                    </div>
+                </c:when>
+                <c:when test="#{not UserAccountManagedBean.anyoneLoggedIn}">
+                    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <p:commandLink styleClass="nav-link" value="Quem somos nós" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
+                            </li>
+                        </ul>
+                    </div>
+                </c:when>
+            </c:choose>
+
         </nav>
     </h:form>
 </ui:composition>

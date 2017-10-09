@@ -13,12 +13,12 @@
             <div class="starter-template" style="margin-top: 9%">
                 <h:form>
                     <div class="form-group">
-                        <h:outputText styleClass="form-control" value="user"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userLogin}"></h:inputText>
+                        <h:outputText styleClass="form-control" value="Marca"></h:outputText>
+                        <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.brand}"></h:inputText>
                     </div>
                     <div class="form-group">
                         <h:outputText styleClass="form-control" value="password"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.password}"></h:inputText>
+                        <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar}"></h:inputText>
                     </div>
                     <div class="form-group">
                         <h:outputText styleClass="form-control" value="name"></h:outputText>
@@ -41,4 +41,5 @@
             </div>
         </div>
     </body>
+    <ui:include src="../includes/Footer.xhtml"/>
 </html>
