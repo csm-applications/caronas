@@ -4,7 +4,9 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:j="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:j="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui">
     <ui:include src="public/includes/HeadIncludesPublic.xhtml"/>
     <body>
         <ui:include src="public/includes/NavBar.xhtml"/>
@@ -12,35 +14,46 @@
         <div class="container">
             <div class="starter-template" style="margin-top: 9%">
                 <h:form>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="user"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userLogin}"></h:inputText>
+                    <p:growl autoUpdate="true"/>
+                    <div class="jumbotron">
+                        <h1>Defina o usuário e senha</h1>
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Usuário"></h:outputText>
+                            <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userLogin}"></h:inputText>
+                        </div>
+                       <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Digite sua senha"></h:outputText>
+                            <h:inputText id="senhas" styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.typePassword}"></h:inputText>
+                        </div>
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Digite a sua senha novamente"></h:outputText>
+                            <h:inputText styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.verifyPassword}"></h:inputText>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="password"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.password}"></h:inputText>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="name"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.userName}"></h:inputText>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="phone number"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.phone}"></h:inputText>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="work sector"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.sector}"></h:inputText>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="email"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.email}"></h:inputText>
+
+                    <div class="jumbotron">
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Nome"></h:outputText>
+                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.userName}"></h:inputText>
+                        </div>
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Telefone"></h:outputText>
+                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="tel" value="#{UserAccountManagedBean.actualUserAccount.phone}"></h:inputText>
+                        </div>
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="Setor de trabalho"></h:outputText>
+                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.sector}"></h:inputText>
+                        </div>
+                        <div class="form-group">
+                            <h:outputText styleClass="form-control" value="E-mail"></h:outputText>
+                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="email" value="#{UserAccountManagedBean.actualUserAccount.email}"></h:inputText>
+                        </div>
                     </div>
                     <h:commandButton styleClass="btn btn-primary" value="Cadastrar" action="#{UserAccountManagedBean.saveUserAccount()}"></h:commandButton>
                 </h:form>
             </div>
         </div>
     </body>
-    
+
     <ui:include src="public/includes/Footer.xhtml"/>
 </html>

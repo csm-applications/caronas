@@ -6,26 +6,32 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:form>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <h:commandLink action="index.xhtml" class="navbar-brand" >
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <h:commandLink action="#{travelManagedBean.gotoListTravels()}" class="navbar-brand" >
                 <h:graphicImage alt="carona" name="images/carona.png" class="imgFot" />
             </h:commandLink>
 
             <c:choose>
                 <c:when test="#{UserAccountManagedBean.anyoneLoggedIn}">
+                    
                     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                         <ul class="navbar-nav mr-auto">
-                            <li class="nav-item">
-                                <p:commandLink styleClass="nav-link" value="Cadastrar" action="#{UserAccountManagedBean.gotoAddAccounts()}"/>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Viagens</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                    <h:commandLink styleClass="dropdown-item" value="Cadastrar" action="#{travelManagedBean.gotoAddTravel()}"/>
+                                    <h:commandLink styleClass="dropdown-item" value="Listar" action="#{travelManagedBean.gotoListTravels()}"/>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <p:commandLink styleClass="nav-link" value="Lista" action="#{UserAccountManagedBean.gotoListUsers()}"/>
-                            </li>
-                            <li class="nav-item">
-                                <p:commandLink styleClass="nav-link" value="Cadastrar Viagem" action="#{travelManagedBean.gotoAddTravel()}"/>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Carros</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                    <h:commandLink styleClass="dropdown-item" value="Cadastrar" action="#{CarManagedBean.gotoAddCars()}"/>
+                                    <h:commandLink styleClass="dropdown-item" value="Listar" action="#{CarManagedBean.gotoListCars()}"/>
+                                </div>
                             </li>
                             <li>
-                                <p:commandLink styleClass="nav-link" value="Cadastrar Carro" action="#{CarManagedBean.gotoAddCars()}"/>
+                                <p:commandLink styleClass="nav-link" value="Contatos" action="#{UserAccountManagedBean.gotoListUsers()}"/>
                             </li>
                         </ul>
                         <ul class="navbar-nav">

@@ -1,18 +1,19 @@
 package view;
 
 import controller.CarJpaController;
+import controller.TaskJpaController;
 import controller.TravelJpaController;
+import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import model.Car;
+import model.Task;
 import model.Travel;
-import org.primefaces.event.SelectEvent;
-import view.EmProvider;
-import view.CarManagedBean;
 
 @ManagedBean
 @SessionScoped
@@ -22,15 +23,18 @@ public class TravelManagedBean {
     //Actual
     private Travel actualTravel = new Travel();
     private Car actualCar = new Car();
+    private Task actualTask = new Task();
     //List
     private ArrayList<Travel> listOfTravels = new ArrayList<>();
     private ArrayList<Car> listOfCars = new ArrayList<>();
+    private ArrayList<Task> listOfTasks = new ArrayList<>();
     //Controller
     private TravelJpaController controlTravel = new TravelJpaController(EmProvider.getInstance().getEntityManagerFactory());
     private CarJpaController controlCar = new CarJpaController(EmProvider.getInstance().getEntityManagerFactory());
+    private TaskJpaController controlTask = new TaskJpaController(EmProvider.getInstance().getEntityManagerFactory());
     //String
-    private String dateInitial;
-    private String dateEnd;
+    private Date dateInitial;
+    private Date dateEnd;
 
     public TravelManagedBean() {
     }
@@ -45,6 +49,11 @@ public class TravelManagedBean {
         loadTravels();
         return "/public/manageTravel/ManageTravel.xhtml?faces-redirect=true";
     }
+    
+    public String gotoDetails() {
+        loadTasks();
+        return "/public/manageTravel/detailsTravel.xhtml?faces-redirect=true";
+    }
 
     public void loadTravels() {
         listOfTravels = new ArrayList(controlTravel.findTravelEntities());
@@ -53,23 +62,30 @@ public class TravelManagedBean {
     public void loadCars() {
         listOfCars = new ArrayList(controlCar.findCarEntities());
     }
+    
+    public void loadTasks(){
+        listOfTasks = new ArrayList<>(actualTravel.getTaskList());
+    }
 
     public String saveTravels() {
-        String a = "cheguei";
-        System.out.println(a);
         try {
-            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
-            Date toInsertInitial = formato.parse(dateInitial);
-            Date toInsertEnd = formato.parse(dateEnd);
-            actualTravel.setTimeInitial(toInsertInitial);
-            actualTravel.setTimeEnd(toInsertEnd);
+            actualTravel.setCarPlate(actualCar);
+            actualTravel.setTimeInitial(dateInitial);
+            actualTravel.setTimeEnd(dateEnd);
             controlTravel.create(actualTravel);
-            System.out.println(toInsertInitial);
-            System.out.println(toInsertEnd);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return gotoListTravels();
+    }
+    
+    public void saveTask() {
+        try {
+            actualTask.setTravelIdTravel(actualTravel);
+            controlTask.create(actualTask);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String editUserAccount() {
@@ -82,7 +98,11 @@ public class TravelManagedBean {
     }
 
     public void destroyTravels() throws NonexistentEntityException {
-        controlTravel.destroy(actualTravel.getIdTravel());
+        try {
+            controlTravel.destroy(actualTravel.getIdTravel());
+        } catch (IllegalOrphanException ex) {
+            Logger.getLogger(TravelManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         gotoListTravels();
     }
 
@@ -118,20 +138,40 @@ public class TravelManagedBean {
         this.listOfCars = listOfCars;
     }
 
-    public String getDateInitial() {
+    public Date getDateInitial() {
         return dateInitial;
     }
 
-    public void setDateInitial(String dateInitial) {
+    public void setDateInitial(Date dateInitial) {
         this.dateInitial = dateInitial;
     }
 
-    public String getDateEnd() {
+    public Date getDateEnd() {
         return dateEnd;
     }
 
-    public void setDateEnd(String dateEnd) {
+    public void setDateEnd(Date dateEnd) {
         this.dateEnd = dateEnd;
     }
+
+    public Task getActualTask() {
+        return actualTask;
+    }
+
+    public void setActualTask(Task actualTask) {
+        this.actualTask = actualTask;
+    }
+
+    public ArrayList<Task> getListOfTasks() {
+        return listOfTasks;
+    }
+
+    public void setListOfTasks(ArrayList<Task> listOfTasks) {
+        this.listOfTasks = listOfTasks;
+    }
+    
+    
+
+  
 
 }

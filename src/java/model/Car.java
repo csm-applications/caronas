@@ -21,17 +21,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author gabri
+ * @author USER
  */
 @Entity
 @Table(name = "car")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Car.findAll", query = "SELECT c FROM Car c")
-    , @NamedQuery(name = "Car.findByPlate", query = "SELECT c FROM Car c WHERE c.plate = :plate")
-    , @NamedQuery(name = "Car.findByBrand", query = "SELECT c FROM Car c WHERE c.brand = :brand")
-    , @NamedQuery(name = "Car.findByModel", query = "SELECT c FROM Car c WHERE c.model = :model")
-    , @NamedQuery(name = "Car.findBySituation", query = "SELECT c FROM Car c WHERE c.situation = :situation")})
+    @NamedQuery(name = "Car.findAll", query = "SELECT c FROM Car c"),
+    @NamedQuery(name = "Car.findByPlate", query = "SELECT c FROM Car c WHERE c.plate = :plate"),
+    @NamedQuery(name = "Car.findByBrand", query = "SELECT c FROM Car c WHERE c.brand = :brand"),
+    @NamedQuery(name = "Car.findByModel", query = "SELECT c FROM Car c WHERE c.model = :model"),
+    @NamedQuery(name = "Car.findBySituation", query = "SELECT c FROM Car c WHERE c.situation = :situation")})
 public class Car implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -128,7 +128,7 @@ public class Car implements Serializable {
 
     @Override
     public String toString() {
-        return "model.Car[ plate=" + plate + " ]";
+        return plate;
     }
     
 }

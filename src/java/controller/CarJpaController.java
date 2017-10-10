@@ -22,7 +22,7 @@ import model.Car;
 
 /**
  *
- * @author gabri
+ * @author USER
  */
 public class CarJpaController implements Serializable {
 

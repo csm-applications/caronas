@@ -1,9 +1,15 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package model;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +21,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,18 +30,18 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author gabri
+ * @author USER
  */
 @Entity
 @Table(name = "travel")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Travel.findAll", query = "SELECT t FROM Travel t")
-    , @NamedQuery(name = "Travel.findByIdTravel", query = "SELECT t FROM Travel t WHERE t.idTravel = :idTravel")
-    , @NamedQuery(name = "Travel.findByDestination", query = "SELECT t FROM Travel t WHERE t.destination = :destination")
-    , @NamedQuery(name = "Travel.findByDescription", query = "SELECT t FROM Travel t WHERE t.description = :description")
-    , @NamedQuery(name = "Travel.findByTimeInitial", query = "SELECT t FROM Travel t WHERE t.timeInitial = :timeInitial")
-    , @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd")})
+    @NamedQuery(name = "Travel.findAll", query = "SELECT t FROM Travel t"),
+    @NamedQuery(name = "Travel.findByIdTravel", query = "SELECT t FROM Travel t WHERE t.idTravel = :idTravel"),
+    @NamedQuery(name = "Travel.findByDestination", query = "SELECT t FROM Travel t WHERE t.destination = :destination"),
+    @NamedQuery(name = "Travel.findByDescription", query = "SELECT t FROM Travel t WHERE t.description = :description"),
+    @NamedQuery(name = "Travel.findByTimeInitial", query = "SELECT t FROM Travel t WHERE t.timeInitial = :timeInitial"),
+    @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd")})
 public class Travel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -61,12 +68,11 @@ public class Travel implements Serializable {
         @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")})
     @ManyToMany
     private List<UserAccount> userAccountList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "travelIdTravel")
+    private List<Task> taskList;
     @JoinColumn(name = "car_plate", referencedColumnName = "plate")
     @ManyToOne(optional = false)
     private Car carPlate;
-    @JoinColumn(name = "task_id_task", referencedColumnName = "id_task")
-    @ManyToOne
-    private Task taskIdTask;
 
     public Travel() {
     }
@@ -131,20 +137,21 @@ public class Travel implements Serializable {
         this.userAccountList = userAccountList;
     }
 
+    @XmlTransient
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
+    }
+
     public Car getCarPlate() {
         return carPlate;
     }
 
     public void setCarPlate(Car carPlate) {
         this.carPlate = carPlate;
-    }
-
-    public Task getTaskIdTask() {
-        return taskIdTask;
-    }
-
-    public void setTaskIdTask(Task taskIdTask) {
-        this.taskIdTask = taskIdTask;
     }
 
     @Override

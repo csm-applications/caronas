@@ -7,20 +7,19 @@ package controller;
 
 import controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import model.Travel;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import model.Task;
+import model.Travel;
 
 /**
  *
- * @author gabri
+ * @author USER
  */
 public class TaskJpaController implements Serializable {
 
@@ -34,28 +33,19 @@ public class TaskJpaController implements Serializable {
     }
 
     public void create(Task task) {
-        if (task.getTravelList() == null) {
-            task.setTravelList(new ArrayList<Travel>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<Travel> attachedTravelList = new ArrayList<Travel>();
-            for (Travel travelListTravelToAttach : task.getTravelList()) {
-                travelListTravelToAttach = em.getReference(travelListTravelToAttach.getClass(), travelListTravelToAttach.getIdTravel());
-                attachedTravelList.add(travelListTravelToAttach);
+            Travel travelIdTravel = task.getTravelIdTravel();
+            if (travelIdTravel != null) {
+                travelIdTravel = em.getReference(travelIdTravel.getClass(), travelIdTravel.getIdTravel());
+                task.setTravelIdTravel(travelIdTravel);
             }
-            task.setTravelList(attachedTravelList);
             em.persist(task);
-            for (Travel travelListTravel : task.getTravelList()) {
-                Task oldTaskIdTaskOfTravelListTravel = travelListTravel.getTaskIdTask();
-                travelListTravel.setTaskIdTask(task);
-                travelListTravel = em.merge(travelListTravel);
-                if (oldTaskIdTaskOfTravelListTravel != null) {
-                    oldTaskIdTaskOfTravelListTravel.getTravelList().remove(travelListTravel);
-                    oldTaskIdTaskOfTravelListTravel = em.merge(oldTaskIdTaskOfTravelListTravel);
-                }
+            if (travelIdTravel != null) {
+                travelIdTravel.getTaskList().add(task);
+                travelIdTravel = em.merge(travelIdTravel);
             }
             em.getTransaction().commit();
         } finally {
@@ -71,32 +61,20 @@ public class TaskJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Task persistentTask = em.find(Task.class, task.getIdTask());
-            List<Travel> travelListOld = persistentTask.getTravelList();
-            List<Travel> travelListNew = task.getTravelList();
-            List<Travel> attachedTravelListNew = new ArrayList<Travel>();
-            for (Travel travelListNewTravelToAttach : travelListNew) {
-                travelListNewTravelToAttach = em.getReference(travelListNewTravelToAttach.getClass(), travelListNewTravelToAttach.getIdTravel());
-                attachedTravelListNew.add(travelListNewTravelToAttach);
+            Travel travelIdTravelOld = persistentTask.getTravelIdTravel();
+            Travel travelIdTravelNew = task.getTravelIdTravel();
+            if (travelIdTravelNew != null) {
+                travelIdTravelNew = em.getReference(travelIdTravelNew.getClass(), travelIdTravelNew.getIdTravel());
+                task.setTravelIdTravel(travelIdTravelNew);
             }
-            travelListNew = attachedTravelListNew;
-            task.setTravelList(travelListNew);
             task = em.merge(task);
-            for (Travel travelListOldTravel : travelListOld) {
-                if (!travelListNew.contains(travelListOldTravel)) {
-                    travelListOldTravel.setTaskIdTask(null);
-                    travelListOldTravel = em.merge(travelListOldTravel);
-                }
+            if (travelIdTravelOld != null && !travelIdTravelOld.equals(travelIdTravelNew)) {
+                travelIdTravelOld.getTaskList().remove(task);
+                travelIdTravelOld = em.merge(travelIdTravelOld);
             }
-            for (Travel travelListNewTravel : travelListNew) {
-                if (!travelListOld.contains(travelListNewTravel)) {
-                    Task oldTaskIdTaskOfTravelListNewTravel = travelListNewTravel.getTaskIdTask();
-                    travelListNewTravel.setTaskIdTask(task);
-                    travelListNewTravel = em.merge(travelListNewTravel);
-                    if (oldTaskIdTaskOfTravelListNewTravel != null && !oldTaskIdTaskOfTravelListNewTravel.equals(task)) {
-                        oldTaskIdTaskOfTravelListNewTravel.getTravelList().remove(travelListNewTravel);
-                        oldTaskIdTaskOfTravelListNewTravel = em.merge(oldTaskIdTaskOfTravelListNewTravel);
-                    }
-                }
+            if (travelIdTravelNew != null && !travelIdTravelNew.equals(travelIdTravelOld)) {
+                travelIdTravelNew.getTaskList().add(task);
+                travelIdTravelNew = em.merge(travelIdTravelNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -127,10 +105,10 @@ public class TaskJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The task with id " + id + " no longer exists.", enfe);
             }
-            List<Travel> travelList = task.getTravelList();
-            for (Travel travelListTravel : travelList) {
-                travelListTravel.setTaskIdTask(null);
-                travelListTravel = em.merge(travelListTravel);
+            Travel travelIdTravel = task.getTravelIdTravel();
+            if (travelIdTravel != null) {
+                travelIdTravel.getTaskList().remove(task);
+                travelIdTravel = em.merge(travelIdTravel);
             }
             em.remove(task);
             em.getTransaction().commit();

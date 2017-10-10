@@ -6,33 +6,32 @@
 package model;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author gabri
+ * @author USER
  */
 @Entity
 @Table(name = "task")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Task.findAll", query = "SELECT t FROM Task t")
-    , @NamedQuery(name = "Task.findByIdTask", query = "SELECT t FROM Task t WHERE t.idTask = :idTask")
-    , @NamedQuery(name = "Task.findByName", query = "SELECT t FROM Task t WHERE t.name = :name")
-    , @NamedQuery(name = "Task.findByDescription", query = "SELECT t FROM Task t WHERE t.description = :description")
-    , @NamedQuery(name = "Task.findByTime", query = "SELECT t FROM Task t WHERE t.time = :time")})
+    @NamedQuery(name = "Task.findAll", query = "SELECT t FROM Task t"),
+    @NamedQuery(name = "Task.findByIdTask", query = "SELECT t FROM Task t WHERE t.idTask = :idTask"),
+    @NamedQuery(name = "Task.findByName", query = "SELECT t FROM Task t WHERE t.name = :name"),
+    @NamedQuery(name = "Task.findByDescription", query = "SELECT t FROM Task t WHERE t.description = :description"),
+    @NamedQuery(name = "Task.findByTime", query = "SELECT t FROM Task t WHERE t.time = :time")})
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,8 +48,9 @@ public class Task implements Serializable {
     private String description;
     @Column(name = "time")
     private String time;
-    @OneToMany(mappedBy = "taskIdTask")
-    private List<Travel> travelList;
+    @JoinColumn(name = "travel_id_travel", referencedColumnName = "id_travel")
+    @ManyToOne(optional = false)
+    private Travel travelIdTravel;
 
     public Task() {
     }
@@ -97,13 +97,12 @@ public class Task implements Serializable {
         this.time = time;
     }
 
-    @XmlTransient
-    public List<Travel> getTravelList() {
-        return travelList;
+    public Travel getTravelIdTravel() {
+        return travelIdTravel;
     }
 
-    public void setTravelList(List<Travel> travelList) {
-        this.travelList = travelList;
+    public void setTravelIdTravel(Travel travelIdTravel) {
+        this.travelIdTravel = travelIdTravel;
     }
 
     @Override

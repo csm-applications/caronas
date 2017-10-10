@@ -68,9 +68,77 @@
 }
 
 .footer {
+    float: left;
     background-color: #fafafa;
 }
 
 .index-carona-container{
     width: 400px;
+}
+
+/* List Item travel*/
+.travelIcon{
+    width: 100%;
+    height: 100%;
+}
+
+.travel{
+    float: left;
+    background-color: #373c42; 
+    border: none;
+    color: white;
+    padding: 1%;
+    text-align: left;
+    margin: 1%;
+    text-decoration: none;
+    font-size: 16px;
+    width: 100%;
+}
+
+.left{
+    float: left;
+    width: 10%;
+    margin: 1.5%;
+}
+
+.right{
+    float: left;
+    width: 85%;
+}
+
+/* item detail travel */
+
+.detailContainer{
+    float: left;
+    width: 100%;
+    padding: 1%;
+    background-color: #d6d8d9;
+}
+
+.detailsTravelElements{
+    float: left;
+    padding: 1%;
+}
+
+.travelIconDetails{
+    float: left;
+    width: 15%;
+    height: 15%;
+}
+
+
+.formInsertTask{
+    width: 100%;
+    float: left;
+    margin-top: 1%;
+    padding: 2%;
+    background-color: #f1f1f1;
+}
+
+.taskList{
+    width: 100%;
+    float: left;
+    margin-top: 1%;
+    padding: 2%;
+    background-color: #fafafa;
 }

@@ -5,7 +5,9 @@ import javax.faces.bean.ManagedBean;
 import controller.UserAccountJpaController;
 import controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 @ManagedBean(name = "UserAccountManagedBean")
@@ -16,14 +18,18 @@ public class UserAccountManagedBean {
     private UserAccount ActualUserAccount = new UserAccount();
     private UserAccountJpaController controlUserAccount = new UserAccountJpaController(EmProvider.getInstance().getEntityManagerFactory());
 
+    //auxiliary
+    private String typePassword;
+    private String verifyPassword;
+
     public UserAccountManagedBean() {
     }
 
     //gotos
-    public String gotoIndex(){
+    public String gotoIndex() {
         return "index?faces-redirect=true";
     }
-            
+
     public String gotoAddAccounts() {
         ActualUserAccount = new UserAccount();
         return "addAccounts.xhtml?faces-redirect=true";
@@ -41,27 +47,27 @@ public class UserAccountManagedBean {
     public void loadUserAccounts() {
         listOfUserAccounts = new ArrayList(controlUserAccount.findUserAccountEntities());
     }
-    
-    public boolean isAnyoneLoggedIn(){
+
+    public boolean isAnyoneLoggedIn() {
         boolean isLogado = false;
-        if(ManageSessions.getUserName() != null){
+        if (ManageSessions.getUserName() != null) {
             isLogado = true;
         }
         return isLogado;
     }
-    
-       public String validateUsernamePassword() {
+
+    public String validateUsernamePassword() {
         if (validateUser(ActualUserAccount)) {
             HttpSession session = ManageSessions.getSession();
             session.setAttribute("username", ActualUserAccount.getUserLogin());
             return "/public/manageTravel/ManageTravel?faces-redirect=true";
         } else {
-            
+
             return "/index?faces-redirect=true";
         }
     }
-       
-    public String logout(){
+
+    public String logout() {
         HttpSession session = ManageSessions.getSession();
         session.invalidate();
         return "/index?faces-redirect=true";
@@ -81,11 +87,20 @@ public class UserAccountManagedBean {
 
     public String saveUserAccount() {
         try {
-            controlUserAccount.create(ActualUserAccount);
+            if (typePassword != null && typePassword.equals(verifyPassword)) {
+                ActualUserAccount.setPassword(typePassword);
+                controlUserAccount.create(ActualUserAccount);
+                HttpSession session = ManageSessions.getSession();
+                session.setAttribute("username", ActualUserAccount.getUserLogin());
+                return "/public/manageTravel/ManageTravel?faces-redirect=true";
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage("Opa! As senhas nao estao iguais", "Erro"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return gotoListUsers();
+        return "/addAccounts?faces-redirect=true";
     }
 
     public String editUserAccount() {
@@ -117,4 +132,21 @@ public class UserAccountManagedBean {
     public void setListOfUserAccounts(ArrayList<UserAccount> listOfUserAccounts) {
         this.listOfUserAccounts = listOfUserAccounts;
     }
+
+    public String getTypePassword() {
+        return typePassword;
+    }
+
+    public void setTypePassword(String typePassword) {
+        this.typePassword = typePassword;
+    }
+
+    public String getVerifyPassword() {
+        return verifyPassword;
+    }
+
+    public void setVerifyPassword(String verifyPassword) {
+        this.verifyPassword = verifyPassword;
+    }
+
 }

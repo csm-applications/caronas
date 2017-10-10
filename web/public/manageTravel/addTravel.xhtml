@@ -30,13 +30,13 @@
                     </div>
                     <div class="form-group">
                         <h:outputText styleClass="form-control" value="Horario de saída"></h:outputText>
-                        <p:calendar id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd/mm/yyyy HH:mm:ss" mode="inline"/>
+                        <p:calendar id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd/mm/yyyy" mode="inline"/>
                     </div>
                     <div class="form-group">
                         <h:outputText styleClass="form-control" value="Horario de chegada"></h:outputText>
-                        <p:calendar id="end" value="#{travelManagedBean.dateEnd}" pattern="dd/mm/yyyy HH:mm:ss" mode="inline"/>
+                        <p:calendar id="end" value="#{travelManagedBean.dateEnd}" pattern="dd/mm/yyyy" mode="inline"/>
                     </div>
-                    <p:commandButton styleClass="btn btn-primary" value="Cadastrar" action="#{travelManagedBean.saveTravels()}"/>
+                    <h:commandButton styleClass="btn btn-primary" value="Cadastrar" action="#{travelManagedBean.saveTravels()}"/>
                 </h:form>
             </div>
         </div>
