@@ -118,6 +118,7 @@
 .detailsTravelElements{
     float: left;
     padding: 1%;
+    width: 75%;
 }
 
 .travelIconDetails{
@@ -141,4 +142,31 @@
     margin-top: 1%;
     padding: 2%;
     background-color: #fafafa;
+}
+
+.taskIcon{
+    width: 50%;
+    height: 50%;
+}
+
+
+/* users list */
+
+.userIcon{
+    width: 55%;
+    height: 100%;
+}
+
+.row-user{
+    float: left;
+    width: 100%;
+    border: dashed 1px #aaa;
+}
+
+.userListContainer{
+    float: left;
+    width: 100%;
+    margin-top: 10px ; 
+    background-color: #f1f1f1;
+    border-radius: 5px 5px 5px 5px;
 }

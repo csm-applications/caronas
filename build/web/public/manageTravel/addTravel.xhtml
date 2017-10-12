@@ -13,30 +13,46 @@
         <div class="container">
             <div class="starter-template" style="margin-top: 9%">
                 <h:form>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Selecione o Carro"/>
-                        <h:selectOneMenu styleClass="form-control" value="#{travelManagedBean.actualCar}">
-                            <f:selectItems value="#{travelManagedBean.listOfCars}" var="car" itemLabel="#{car.brand} - #{car.model} - #{car.plate}" itemValue="#{car}"/>
-                            <f:converter converterId="ConvertCars"/>
-                        </h:selectOneMenu>
+                    <h2>Cadastrar Viagens</h2>
+                    <div class="jumbotron">
+                        <div class="form-group">
+                            <h:outputLabel for="selectTheCar" styleClass="form-control" value="Selecione o Carro"/>
+                            <h:selectOneMenu id="selectTheCar" styleClass="form-control" value="#{travelManagedBean.actualCar}">
+                                <f:selectItems value="#{travelManagedBean.listOfCars}" var="car" itemLabel="#{car.brand} - #{car.model} - #{car.plate}" itemValue="#{car}"/>
+                                <f:converter converterId="ConvertCars"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="typeTheDestination" styleClass="form-control" value="Destino"/>
+                            <h:inputText id="typeTheDestination" styleClass="form-control" value="#{travelManagedBean.actualTravel.destination}"/>
+                        </div>
+                        <div class="form-group">
+                            <h:outputLabel for="typeTheDescription" styleClass="form-control" value="Descrição"/>
+                            <h:inputTextarea id="typeTheDescription" rows="7" styleClass="form-control" value="#{travelManagedBean.actualTravel.description}"/>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Destino"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.destination}"/>
+                    
+                    <h5>Preencha o horário da viagem</h5>
+                    
+                    <div class="jumbotron">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <h:outputLabel  for="initial" styleClass="form-control" value="Horario de saída"/>
+                                <p:calendar id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd/mm/yyyy" mode="inline"/>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <h:outputLabel for="end" styleClass="form-control" value="Horario de chegada"/>
+                                <p:calendar id="end" value="#{travelManagedBean.dateEnd}" pattern="dd/mm/yyyy" mode="inline"/>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Descrição"></h:outputText>
-                        <h:inputText styleClass="form-control" value="#{travelManagedBean.actualTravel.description}"/>
+
+                    <h5>Preencha os usuários que participarão da viagem</h5>
+                    <div class="jumbotron" >
+                        <p:pickList id="pickList" value="#{travelManagedBean.users}"  var="usrs" itemLabel="#{usrs}" itemValue="#{usrs}" />
+
                     </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Horario de saída"></h:outputText>
-                        <p:calendar id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd/mm/yyyy" mode="inline"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputText styleClass="form-control" value="Horario de chegada"></h:outputText>
-                        <p:calendar id="end" value="#{travelManagedBean.dateEnd}" pattern="dd/mm/yyyy" mode="inline"/>
-                    </div>
-                    <h:commandButton styleClass="btn btn-primary" value="Cadastrar" action="#{travelManagedBean.saveTravels()}"/>
+                    <h:commandButton styleClass="form-control btn btn-primary" style="margin-bottom: 2%" value="Cadastrar" action="#{travelManagedBean.saveTravels()}"/>
                 </h:form>
             </div>
         </div>

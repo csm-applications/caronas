@@ -9,7 +9,7 @@
     <f:metadata>
         <f:viewAction action="#{travelManagedBean.loadTravels()}"/>
     </f:metadata>
-    
+
     <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
     <ui:include src="../includes/NavBar.xhtml"/>
 
@@ -20,9 +20,10 @@
             <div class="container">
                 <div style="margin-top: 10%">
                     <ui:repeat value="#{travelManagedBean.listOfTravels}" var="trav">
-                        <h:commandLink  action="#{travelManagedBean.gotoDetails()}">
-                            <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
-                            <div class="travel">
+                        <div class="travel">
+                            <h:commandLink style="color: #fff;"  action="#{travelManagedBean.gotoDetails()}">
+                                <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
+
                                 <div class="left">
                                     <h:graphicImage alt="carona" name="images/travel.jpg" class="travelIcon" />
                                 </div>
@@ -31,13 +32,17 @@
                                     <div>Carro: #{trav.carPlate.plate}</div>
                                     <div>Data de Início: #{trav.timeInitial}</div>
                                     <div>Data do fim: #{trav.timeEnd}</div>
-                                    <div>Descrição: #{trav.description}</div>    
+                                    <div>Descrição: #{trav.description}</div>  
                                 </div>
-                            </div>
-                        </h:commandLink>
+                            </h:commandLink>
+                            <p:commandButton update="@form" value="Cancelar viagem" icon="ui-icon-close" action="#{travelManagedBean.destroyTravels()}" styleClass="btn btn-danger" style="margin-top: 1%">
+                                <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
+                            </p:commandButton>
+
+                        </div>
                     </ui:repeat>
                 </div>
-                
+
             </div>
         </h:form>
     </body>

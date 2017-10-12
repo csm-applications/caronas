@@ -8,6 +8,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import model.Car;
 
+@FacesConverter("ConvertCars")
 public class ConvertCars implements Converter{
     
     CarJpaController car = new CarJpaController(EmProvider.getInstance().getEntityManagerFactory());

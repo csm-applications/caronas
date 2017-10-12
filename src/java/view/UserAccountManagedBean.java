@@ -43,6 +43,10 @@ public class UserAccountManagedBean {
     public String gotoEditUsers() {
         return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
     }
+    
+     public String gotoManageTravel() {
+        return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
+    }
 
     public void loadUserAccounts() {
         listOfUserAccounts = new ArrayList(controlUserAccount.findUserAccountEntities());
@@ -100,7 +104,7 @@ public class UserAccountManagedBean {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "/addAccounts?faces-redirect=true";
+        return "#";
     }
 
     public String editUserAccount() {

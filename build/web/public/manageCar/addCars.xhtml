@@ -10,7 +10,7 @@
         <ui:include src="../includes/NavBar.xhtml"/>
 
         <div class="container">
-            <div class="starter-template" style="margin-top: 9%">
+            <div class="jumbotron" style="margin-top: 9%">
                 <h:form>
                     <div class="form-group">
                         <h:outputLabel styleClass="form-control" value="Marca do Veículo"/>
@@ -44,7 +44,7 @@
                             <f:selectItem itemLabel="Em Manutenção" itemValue="Em Manutenção"/>
                         </h:selectOneMenu>
                     </div>
-                    <h:commandButton styleClass="btn btn-primary" value="Cadastrar" action="#{CarManagedBean.saveCars()}"/>
+                    <h:commandButton styleClass="form-control btn btn-primary" value="Cadastrar" action="#{CarManagedBean.saveCars()}"/>
                 </h:form>
             </div>
         </div>

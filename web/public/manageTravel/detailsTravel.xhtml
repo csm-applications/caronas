@@ -12,8 +12,8 @@
     <ui:include src="../includes/NavBar.xhtml"/>
 
     <body>
-
         <div class="container">
+            <p:growl autoUpdate="true"/>
             <div class="starter-template" style="margin-top: 9%">
                 <div class="detailContainer">
                     <h2 style="text-align: center">Detalhes da viagem</h2>
@@ -24,42 +24,64 @@
                         <div> Descrição: #{travelManagedBean.actualTravel.description}</div>
                         <div> Início da viagem: #{travelManagedBean.actualTravel.timeEnd}</div>
                         <div> Fim da viagem: #{travelManagedBean.actualTravel.timeInitial}</div>
-                    </div>
-                </div>
-
-                <div style="margin-top: 10%">
-                    <ui:repeat id="listOfTasks" value="#{travelManagedBean.listOfTasks}" var="Task">
-                        <div class="taskList">
-                            <div class="left">
-                                <h:graphicImage alt="carona" name="images/task.png" class="travelIcon" />
-                            </div>
-                            <div class="right">
-                                <div>Destino: #{trav.destination}</div>
-                                <div>Carro: #{trav.carPlate.plate}</div>
-                                <div>Data de Início: #{trav.timeInitial}</div>
-                                <div>Data do fim: #{trav.timeEnd}</div>
-                                <div>Descrição: #{trav.description}</div>    
-                            </div>
-                        </div>
-                    </ui:repeat>
-
-                    <div class="formInsertTask">
                         <h:form>
-                            <div >
-                                <h3>Tarefas</h3>
-                                <div class="form-group">
-                                    <h:inputText styleClass="form-control" a:placeholder="Digite o nome da tarefa" value="#{travelManagedBean.actualTask.name}"/>
-                                    <h:inputTextarea styleClass="form-control" rows="5" a:placeholder="Descreva sua tarefa" value="#{travelManagedBean.actualTask.description}"/>
-                                    <p:calendar  mode="inline" styleClass="form-control" a:placeholder="Selecione a hora" value="#{travelManagedBean.actualTask.time}"></p:calendar>
-                                    <h:commandButton action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa">
-                                    </h:commandButton>
-                                </div>                        
+                            <div class="userListContainer">
+
+                                <ui:repeat value="#{travelManagedBean.actualTravel.userAccountList}" var="ocupantes">
+                                    <div class="row-user">
+                                        <div class="left">
+                                            <h:graphicImage alt="user" name="images/user.png" class="userIcon" />
+                                        </div>
+                                        <div class="right">#{ocupantes.userName}</div>
+                                        <div class="right">#{ocupantes.phone}</div>
+                                        <div class="right">#{ocupantes.email}</div>
+                                    </div>
+                                </ui:repeat>
                             </div>
+                            <p:commandButton update="@form" value="Quero ir também!" style="margin-top: 1%;" action="#{travelManagedBean.submitToThisTrip()}" styleClass="btn btn-success"/>
                         </h:form>
                     </div>
                 </div>
+
+
+                <div style="margin-top: 10%">
+                    <h:form id="formTasks">
+                        <ui:repeat id="listOfTasks" value="#{travelManagedBean.listOfTasks}" var="task">
+                            <div class="taskList">
+                                <div class="left">
+                                    <h:graphicImage alt="carona" name="images/task.png" class="taskIcon" />
+                                </div>
+                                <div class="right">
+                                    <div>Nome da tarefa: #{task.name}</div>
+                                    <div>Descrição: #{task.description}</div>
+                                    <div>Data: #{task.time}</div> 
+                                    <p:commandButton update="@form" styleClass="btn btn-danger" style="margin-top: 1%" value="Excluir tarefa" icon="ui-icon-close" action="#{travelManagedBean.destroyTask()}">
+                                        <f:setPropertyActionListener target="#{travelManagedBean.actualTask}" value="#{task}"/>
+                                    </p:commandButton>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </h:form>
+                    <div class="formInsertTask">
+
+                        <div >
+                            <h3>Tarefas</h3>
+                            <div class="form-group">
+                                <h:form>
+                                    <h:inputText  required="true" requiredMessage="É necessário escolher dar um título a sua Tarefa" styleClass="form-control" a:placeholder="Digite o nome da tarefa" value="#{travelManagedBean.actualTask.name}"/>
+                                    <h:inputTextarea required="true" requiredMessage="É necessário descrever sua tarefa"     styleClass="form-control" rows="5" a:placeholder="Descreva sua tarefa" value="#{travelManagedBean.actualTask.description}"/>
+                                    <p:calendar  required="true" requiredMessage="É necessário escolher uma data" mode="inline" styleClass="form-control" a:placeholder="Selecione a hora" value="#{travelManagedBean.actualTask.time}"></p:calendar>
+                                    <p:commandButton update=":formTasks" style="margin-top: 1%;" action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa">
+                                    </p:commandButton>
+                                </h:form>
+                            </div>                        
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
     </body>
     <ui:include src="../includes/Footer.xhtml"/>
 </html>
