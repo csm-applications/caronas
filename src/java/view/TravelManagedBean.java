@@ -19,7 +19,6 @@ import model.Car;
 import model.Task;
 import model.Travel;
 import model.UserAccount;
-import static org.primefaces.component.contextmenu.ContextMenu.PropertyKeys.event;
 import org.primefaces.model.DualListModel;
 
 @ManagedBean
@@ -42,7 +41,8 @@ public class TravelManagedBean {
     private CarJpaController controlCar = new CarJpaController(EmProvider.getInstance().getEntityManagerFactory());
     private TaskJpaController controlTask = new TaskJpaController(EmProvider.getInstance().getEntityManagerFactory());
     private UserAccountJpaController controlUser = new UserAccountJpaController(EmProvider.getInstance().getEntityManagerFactory());
-    //String
+
+    //auxiliarys
     private Date dateInitial;
     private Date dateEnd;
     private DualListModel<String> users = new DualListModel<>();
@@ -98,15 +98,16 @@ public class TravelManagedBean {
             usersToAdd.add(controlUser.findUserAccount(a));
         }
         try {
-            actualTravel.setUserAccountList(listOfUserAccounts);
+            actualTravel.setUserAccountList(usersToAdd);
             actualTravel.setCarPlate(actualCar);
             actualTravel.setTimeInitial(dateInitial);
             actualTravel.setTimeEnd(dateEnd);
             controlTravel.create(actualTravel);
+            return gotoListTravels();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return gotoListTravels();
+        return "#";
     }
 
     public void submitToThisTrip() {
@@ -127,10 +128,30 @@ public class TravelManagedBean {
         }
     }
 
-    public void saveTask() {
+    public void removeUserFromTravel() {
+        List<UserAccount> listToEdit = actualTravel.getUserAccountList();
         try {
+            if (isThisMyself(actualUserAccount) || actualUserAccount.getIsAdministrator()) {
+                listToEdit.remove(actualUserAccount);
+                actualTravel.setUserAccountList(listToEdit);
+                controlTravel.edit(actualTravel);
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opa! você não tem permissão pra remover outras pessoas de uma viagem", "!"));
+                return;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void saveTask() {
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
+        try {
+            actualTask.setUseraccountuserLogin(myself);
             actualTask.setTravelIdTravel(actualTravel);
             controlTask.create(actualTask);
+            actualTask = new Task();
             loadTasks();
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,12 +182,27 @@ public class TravelManagedBean {
     }
 
     public void destroyTask() {
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
         try {
-            controlTask.destroy(actualTask.getIdTask());
-            loadTasks();
+            if (isThisMyself(actualTask.getUseraccountuserLogin()) || myself.getIsAdministrator()) {
+                controlTask.destroy(actualTask.getIdTask());
+                loadTasks();
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opa! você não tem permissão para excluir tarefas de outras pessoas", "!"));
+                return;
+            }
         } catch (NonexistentEntityException ex) {
             Logger.getLogger(TravelManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public boolean isThisMyself(UserAccount toVerify) {
+        String userInSession = ManageSessions.getUserName();
+        if (userInSession.equals(toVerify.getUserLogin())) {
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<Travel> getListOfTravels() {
@@ -256,4 +292,5 @@ public class TravelManagedBean {
     public void setUsers(DualListModel<String> users) {
         this.users = users;
     }
+
 }

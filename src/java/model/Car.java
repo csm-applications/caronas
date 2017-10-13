@@ -128,7 +128,7 @@ public class Car implements Serializable {
 
     @Override
     public String toString() {
-        return plate;
+        return "model.Car[ plate=" + plate + " ]";
     }
     
 }

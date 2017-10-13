@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import model.Task;
 import model.Travel;
+import model.UserAccount;
 
 /**
  *
@@ -42,10 +43,19 @@ public class TaskJpaController implements Serializable {
                 travelIdTravel = em.getReference(travelIdTravel.getClass(), travelIdTravel.getIdTravel());
                 task.setTravelIdTravel(travelIdTravel);
             }
+            UserAccount useraccountuserLogin = task.getUseraccountuserLogin();
+            if (useraccountuserLogin != null) {
+                useraccountuserLogin = em.getReference(useraccountuserLogin.getClass(), useraccountuserLogin.getUserLogin());
+                task.setUseraccountuserLogin(useraccountuserLogin);
+            }
             em.persist(task);
             if (travelIdTravel != null) {
                 travelIdTravel.getTaskList().add(task);
                 travelIdTravel = em.merge(travelIdTravel);
+            }
+            if (useraccountuserLogin != null) {
+                useraccountuserLogin.getTaskList().add(task);
+                useraccountuserLogin = em.merge(useraccountuserLogin);
             }
             em.getTransaction().commit();
         } finally {
@@ -63,9 +73,15 @@ public class TaskJpaController implements Serializable {
             Task persistentTask = em.find(Task.class, task.getIdTask());
             Travel travelIdTravelOld = persistentTask.getTravelIdTravel();
             Travel travelIdTravelNew = task.getTravelIdTravel();
+            UserAccount useraccountuserLoginOld = persistentTask.getUseraccountuserLogin();
+            UserAccount useraccountuserLoginNew = task.getUseraccountuserLogin();
             if (travelIdTravelNew != null) {
                 travelIdTravelNew = em.getReference(travelIdTravelNew.getClass(), travelIdTravelNew.getIdTravel());
                 task.setTravelIdTravel(travelIdTravelNew);
+            }
+            if (useraccountuserLoginNew != null) {
+                useraccountuserLoginNew = em.getReference(useraccountuserLoginNew.getClass(), useraccountuserLoginNew.getUserLogin());
+                task.setUseraccountuserLogin(useraccountuserLoginNew);
             }
             task = em.merge(task);
             if (travelIdTravelOld != null && !travelIdTravelOld.equals(travelIdTravelNew)) {
@@ -75,6 +91,14 @@ public class TaskJpaController implements Serializable {
             if (travelIdTravelNew != null && !travelIdTravelNew.equals(travelIdTravelOld)) {
                 travelIdTravelNew.getTaskList().add(task);
                 travelIdTravelNew = em.merge(travelIdTravelNew);
+            }
+            if (useraccountuserLoginOld != null && !useraccountuserLoginOld.equals(useraccountuserLoginNew)) {
+                useraccountuserLoginOld.getTaskList().remove(task);
+                useraccountuserLoginOld = em.merge(useraccountuserLoginOld);
+            }
+            if (useraccountuserLoginNew != null && !useraccountuserLoginNew.equals(useraccountuserLoginOld)) {
+                useraccountuserLoginNew.getTaskList().add(task);
+                useraccountuserLoginNew = em.merge(useraccountuserLoginNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -109,6 +133,11 @@ public class TaskJpaController implements Serializable {
             if (travelIdTravel != null) {
                 travelIdTravel.getTaskList().remove(task);
                 travelIdTravel = em.merge(travelIdTravel);
+            }
+            UserAccount useraccountuserLogin = task.getUseraccountuserLogin();
+            if (useraccountuserLogin != null) {
+                useraccountuserLogin.getTaskList().remove(task);
+                useraccountuserLogin = em.merge(useraccountuserLogin);
             }
             em.remove(task);
             em.getTransaction().commit();

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import model.Task;
 import model.UserAccount;
 
 /**
@@ -38,6 +39,9 @@ public class UserAccountJpaController implements Serializable {
         if (userAccount.getTravelList() == null) {
             userAccount.setTravelList(new ArrayList<Travel>());
         }
+        if (userAccount.getTaskList() == null) {
+            userAccount.setTaskList(new ArrayList<Task>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -48,10 +52,25 @@ public class UserAccountJpaController implements Serializable {
                 attachedTravelList.add(travelListTravelToAttach);
             }
             userAccount.setTravelList(attachedTravelList);
+            List<Task> attachedTaskList = new ArrayList<Task>();
+            for (Task taskListTaskToAttach : userAccount.getTaskList()) {
+                taskListTaskToAttach = em.getReference(taskListTaskToAttach.getClass(), taskListTaskToAttach.getIdTask());
+                attachedTaskList.add(taskListTaskToAttach);
+            }
+            userAccount.setTaskList(attachedTaskList);
             em.persist(userAccount);
             for (Travel travelListTravel : userAccount.getTravelList()) {
                 travelListTravel.getUserAccountList().add(userAccount);
                 travelListTravel = em.merge(travelListTravel);
+            }
+            for (Task taskListTask : userAccount.getTaskList()) {
+                UserAccount oldUseraccountuserLoginOfTaskListTask = taskListTask.getUseraccountuserLogin();
+                taskListTask.setUseraccountuserLogin(userAccount);
+                taskListTask = em.merge(taskListTask);
+                if (oldUseraccountuserLoginOfTaskListTask != null) {
+                    oldUseraccountuserLoginOfTaskListTask.getTaskList().remove(taskListTask);
+                    oldUseraccountuserLoginOfTaskListTask = em.merge(oldUseraccountuserLoginOfTaskListTask);
+                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -74,6 +93,8 @@ public class UserAccountJpaController implements Serializable {
             UserAccount persistentUserAccount = em.find(UserAccount.class, userAccount.getUserLogin());
             List<Travel> travelListOld = persistentUserAccount.getTravelList();
             List<Travel> travelListNew = userAccount.getTravelList();
+            List<Task> taskListOld = persistentUserAccount.getTaskList();
+            List<Task> taskListNew = userAccount.getTaskList();
             List<Travel> attachedTravelListNew = new ArrayList<Travel>();
             for (Travel travelListNewTravelToAttach : travelListNew) {
                 travelListNewTravelToAttach = em.getReference(travelListNewTravelToAttach.getClass(), travelListNewTravelToAttach.getIdTravel());
@@ -81,6 +102,13 @@ public class UserAccountJpaController implements Serializable {
             }
             travelListNew = attachedTravelListNew;
             userAccount.setTravelList(travelListNew);
+            List<Task> attachedTaskListNew = new ArrayList<Task>();
+            for (Task taskListNewTaskToAttach : taskListNew) {
+                taskListNewTaskToAttach = em.getReference(taskListNewTaskToAttach.getClass(), taskListNewTaskToAttach.getIdTask());
+                attachedTaskListNew.add(taskListNewTaskToAttach);
+            }
+            taskListNew = attachedTaskListNew;
+            userAccount.setTaskList(taskListNew);
             userAccount = em.merge(userAccount);
             for (Travel travelListOldTravel : travelListOld) {
                 if (!travelListNew.contains(travelListOldTravel)) {
@@ -92,6 +120,23 @@ public class UserAccountJpaController implements Serializable {
                 if (!travelListOld.contains(travelListNewTravel)) {
                     travelListNewTravel.getUserAccountList().add(userAccount);
                     travelListNewTravel = em.merge(travelListNewTravel);
+                }
+            }
+            for (Task taskListOldTask : taskListOld) {
+                if (!taskListNew.contains(taskListOldTask)) {
+                    taskListOldTask.setUseraccountuserLogin(null);
+                    taskListOldTask = em.merge(taskListOldTask);
+                }
+            }
+            for (Task taskListNewTask : taskListNew) {
+                if (!taskListOld.contains(taskListNewTask)) {
+                    UserAccount oldUseraccountuserLoginOfTaskListNewTask = taskListNewTask.getUseraccountuserLogin();
+                    taskListNewTask.setUseraccountuserLogin(userAccount);
+                    taskListNewTask = em.merge(taskListNewTask);
+                    if (oldUseraccountuserLoginOfTaskListNewTask != null && !oldUseraccountuserLoginOfTaskListNewTask.equals(userAccount)) {
+                        oldUseraccountuserLoginOfTaskListNewTask.getTaskList().remove(taskListNewTask);
+                        oldUseraccountuserLoginOfTaskListNewTask = em.merge(oldUseraccountuserLoginOfTaskListNewTask);
+                    }
                 }
             }
             em.getTransaction().commit();
@@ -127,6 +172,11 @@ public class UserAccountJpaController implements Serializable {
             for (Travel travelListTravel : travelList) {
                 travelListTravel.getUserAccountList().remove(userAccount);
                 travelListTravel = em.merge(travelListTravel);
+            }
+            List<Task> taskList = userAccount.getTaskList();
+            for (Task taskListTask : taskList) {
+                taskListTask.setUseraccountuserLogin(null);
+                taskListTask = em.merge(taskListTask);
             }
             em.remove(userAccount);
             em.getTransaction().commit();

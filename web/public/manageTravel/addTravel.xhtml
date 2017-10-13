@@ -13,22 +13,23 @@
         <div class="container">
             <div class="starter-template" style="margin-top: 9%">
                 <h:form>
+                    <p:growl autoUpdate="true"/>
                     <h2>Cadastrar Viagens</h2>
                     <div class="jumbotron">
                         <div class="form-group">
                             <h:outputLabel for="selectTheCar" styleClass="form-control" value="Selecione o Carro"/>
-                            <h:selectOneMenu id="selectTheCar" styleClass="form-control" value="#{travelManagedBean.actualCar}">
+                            <h:selectOneMenu requiredMessage="É obrigatório selecionar um veículo" required="true" id="selectTheCar" styleClass="form-control" value="#{travelManagedBean.actualCar}">
                                 <f:selectItems value="#{travelManagedBean.listOfCars}" var="car" itemLabel="#{car.brand} - #{car.model} - #{car.plate}" itemValue="#{car}"/>
                                 <f:converter converterId="ConvertCars"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="form-group">
                             <h:outputLabel for="typeTheDestination" styleClass="form-control" value="Destino"/>
-                            <h:inputText id="typeTheDestination" styleClass="form-control" value="#{travelManagedBean.actualTravel.destination}"/>
+                            <h:inputText id="typeTheDestination" requiredMessage="É necessário inserir um destino" required="true" styleClass="form-control" value="#{travelManagedBean.actualTravel.destination}"/>
                         </div>
                         <div class="form-group">
                             <h:outputLabel for="typeTheDescription" styleClass="form-control" value="Descrição"/>
-                            <h:inputTextarea id="typeTheDescription" rows="7" styleClass="form-control" value="#{travelManagedBean.actualTravel.description}"/>
+                            <h:inputTextarea id="typeTheDescription" requiredMessage="Descreva seu objetivo com esta viagem" required="true" rows="7" styleClass="form-control" value="#{travelManagedBean.actualTravel.description}"/>
                         </div>
                     </div>
                     
@@ -38,11 +39,11 @@
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <h:outputLabel  for="initial" styleClass="form-control" value="Horario de saída"/>
-                                <p:calendar id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd/mm/yyyy" mode="inline"/>
+                                <p:calendar required="true" requiredMessage="Selecione um data e horario previsto de saída" id="initial" value="#{travelManagedBean.dateInitial}" pattern="dd-MM-yyyy" mode="inline"/>
                             </div>
                             <div class="form-group col-md-6">
                                 <h:outputLabel for="end" styleClass="form-control" value="Horario de chegada"/>
-                                <p:calendar id="end" value="#{travelManagedBean.dateEnd}" pattern="dd/mm/yyyy" mode="inline"/>
+                                <p:calendar required="true" requiredMessage="Selecione um data e horario previsto de chegada" id="end" value="#{travelManagedBean.dateEnd}" pattern="dd-MM-yyyy" mode="inline"/>
                             </div>
                         </div>
                     </div>

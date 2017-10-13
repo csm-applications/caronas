@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserAccount.findByUserName", query = "SELECT u FROM UserAccount u WHERE u.userName = :userName"),
     @NamedQuery(name = "UserAccount.findByPhone", query = "SELECT u FROM UserAccount u WHERE u.phone = :phone"),
     @NamedQuery(name = "UserAccount.findBySector", query = "SELECT u FROM UserAccount u WHERE u.sector = :sector"),
-    @NamedQuery(name = "UserAccount.findByEmail", query = "SELECT u FROM UserAccount u WHERE u.email = :email")})
+    @NamedQuery(name = "UserAccount.findByEmail", query = "SELECT u FROM UserAccount u WHERE u.email = :email"),
+    @NamedQuery(name = "UserAccount.findByIsAdministrator", query = "SELECT u FROM UserAccount u WHERE u.isAdministrator = :isAdministrator")})
 public class UserAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -55,8 +57,12 @@ public class UserAccount implements Serializable {
     @Basic(optional = false)
     @Column(name = "email")
     private String email;
+    @Column(name = "isAdministrator")
+    private Boolean isAdministrator;
     @ManyToMany(mappedBy = "userAccountList")
     private List<Travel> travelList;
+    @OneToMany(mappedBy = "useraccountuserLogin")
+    private List<Task> taskList;
 
     public UserAccount() {
     }
@@ -122,6 +128,14 @@ public class UserAccount implements Serializable {
         this.email = email;
     }
 
+    public Boolean getIsAdministrator() {
+        return isAdministrator;
+    }
+
+    public void setIsAdministrator(Boolean isAdministrator) {
+        this.isAdministrator = isAdministrator;
+    }
+
     @XmlTransient
     public List<Travel> getTravelList() {
         return travelList;
@@ -129,6 +143,15 @@ public class UserAccount implements Serializable {
 
     public void setTravelList(List<Travel> travelList) {
         this.travelList = travelList;
+    }
+
+    @XmlTransient
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
     }
 
     @Override

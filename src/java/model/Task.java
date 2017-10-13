@@ -7,7 +7,6 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Task.findAll", query = "SELECT t FROM Task t"),
     @NamedQuery(name = "Task.findByIdTask", query = "SELECT t FROM Task t WHERE t.idTask = :idTask"),
     @NamedQuery(name = "Task.findByName", query = "SELECT t FROM Task t WHERE t.name = :name"),
-    @NamedQuery(name = "Task.findByDescription", query = "SELECT t FROM Task t WHERE t.description = :description"),
-    @NamedQuery(name = "Task.findByTime", query = "SELECT t FROM Task t WHERE t.time = :time")})
+    @NamedQuery(name = "Task.findByDescription", query = "SELECT t FROM Task t WHERE t.description = :description")})
 public class Task implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,11 +45,12 @@ public class Task implements Serializable {
     @Basic(optional = false)
     @Column(name = "description")
     private String description;
-    @Column(name = "time")
-    private String time;
     @JoinColumn(name = "travel_id_travel", referencedColumnName = "id_travel")
     @ManyToOne(optional = false)
     private Travel travelIdTravel;
+    @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")
+    @ManyToOne
+    private UserAccount useraccountuserLogin;
 
     public Task() {
     }
@@ -90,20 +89,20 @@ public class Task implements Serializable {
         this.description = description;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public Travel getTravelIdTravel() {
         return travelIdTravel;
     }
 
     public void setTravelIdTravel(Travel travelIdTravel) {
         this.travelIdTravel = travelIdTravel;
+    }
+
+    public UserAccount getUseraccountuserLogin() {
+        return useraccountuserLogin;
+    }
+
+    public void setUseraccountuserLogin(UserAccount useraccountuserLogin) {
+        this.useraccountuserLogin = useraccountuserLogin;
     }
 
     @Override

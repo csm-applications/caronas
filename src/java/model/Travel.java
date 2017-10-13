@@ -68,7 +68,7 @@ public class Travel implements Serializable {
         @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")})
     @ManyToMany
     private List<UserAccount> userAccountList;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "travelIdTravel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "travelIdTravel")
     private List<Task> taskList;
     @JoinColumn(name = "car_plate", referencedColumnName = "plate")
     @ManyToOne(optional = false)

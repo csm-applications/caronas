@@ -1,5 +1,6 @@
 package view;
 
+import AdminPassword.AdminPass;
 import model.UserAccount;
 import javax.faces.bean.ManagedBean;
 import controller.UserAccountJpaController;
@@ -22,6 +23,8 @@ public class UserAccountManagedBean {
     private String typePassword;
     private String verifyPassword;
 
+    private String adminPassword;
+
     public UserAccountManagedBean() {
     }
 
@@ -41,15 +44,28 @@ public class UserAccountManagedBean {
     }
 
     public String gotoEditUsers() {
+        return "/editPermissions.xhtml?faces-redirect=true";
+    }
+
+    public String gotoManageTravel() {
         return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
     }
-    
-     public String gotoManageTravel() {
-        return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
+
+    public String gotoManagePermissions() {
+        return "/managePermissions.xhtml?faces-redirect=true";
+    }
+
+    public String gotoEditPermissions() {
+        return "/editPermissions.xhtml?faces-redirect=true";
     }
 
     public void loadUserAccounts() {
         listOfUserAccounts = new ArrayList(controlUserAccount.findUserAccountEntities());
+    }
+
+    public void clearFields() {
+        adminPassword = "";
+        ActualUserAccount = new UserAccount();
     }
 
     public boolean isAnyoneLoggedIn() {
@@ -92,6 +108,7 @@ public class UserAccountManagedBean {
     public String saveUserAccount() {
         try {
             if (typePassword != null && typePassword.equals(verifyPassword)) {
+                ActualUserAccount.setIsAdministrator(false);
                 ActualUserAccount.setPassword(typePassword);
                 controlUserAccount.create(ActualUserAccount);
                 HttpSession session = ManageSessions.getSession();
@@ -105,6 +122,21 @@ public class UserAccountManagedBean {
             e.printStackTrace();
         }
         return "#";
+    }
+
+    public String editPermissions() {
+        try {
+            if (AdminPass.adminPass.equals(adminPassword)) {
+                controlUserAccount.edit(ActualUserAccount);
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage("Opa! digite a senha do administrador", "Erro"));
+                return "#";
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return gotoManagePermissions();
     }
 
     public String editUserAccount() {
@@ -151,6 +183,14 @@ public class UserAccountManagedBean {
 
     public void setVerifyPassword(String verifyPassword) {
         this.verifyPassword = verifyPassword;
+    }
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
     }
 
 }
