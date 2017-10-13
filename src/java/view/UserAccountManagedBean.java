@@ -128,6 +128,7 @@ public class UserAccountManagedBean {
         try {
             if (AdminPass.adminPass.equals(adminPassword)) {
                 controlUserAccount.edit(ActualUserAccount);
+                adminPassword = "";
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.addMessage(null, new FacesMessage("Opa! digite a senha do administrador", "Erro"));

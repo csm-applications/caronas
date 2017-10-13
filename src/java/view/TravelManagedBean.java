@@ -129,9 +129,10 @@ public class TravelManagedBean {
     }
 
     public void removeUserFromTravel() {
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
         List<UserAccount> listToEdit = actualTravel.getUserAccountList();
         try {
-            if (isThisMyself(actualUserAccount) || actualUserAccount.getIsAdministrator()) {
+            if (isThisMyself(actualUserAccount) || myself.getIsAdministrator()) {
                 listToEdit.remove(actualUserAccount);
                 actualTravel.setUserAccountList(listToEdit);
                 controlTravel.edit(actualTravel);

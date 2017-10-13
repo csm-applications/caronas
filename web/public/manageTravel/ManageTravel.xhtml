@@ -32,12 +32,12 @@
                                     <div>Carro: #{trav.carPlate.plate}</div>
                                     <div>Data de Início: 
                                         <h:outputText value="#{travelManagedBean.actualTravel.timeInitial}">
-                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                         </h:outputText>
                                     </div>
                                     <div>Data do fim: 
                                         <h:outputText value="#{travelManagedBean.actualTravel.timeEnd}">
-                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
                                         </h:outputText>
                                     </div>
                                     <div>Descrição: #{trav.description}</div>  

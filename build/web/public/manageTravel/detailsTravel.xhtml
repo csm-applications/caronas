@@ -24,12 +24,12 @@
                         <div> Descrição: #{travelManagedBean.actualTravel.description}</div>
                         <div> Início da viagem: 
                             <h:outputText value="#{travelManagedBean.actualTravel.timeInitial}">
-                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
                             </h:outputText>
                         </div>
                         <div> Fim da viagem: 
                             <h:outputText value="#{travelManagedBean.actualTravel.timeEnd}">
-                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
                             </h:outputText>
                         </div>
                         <h:form id="formUsersInTravel">
