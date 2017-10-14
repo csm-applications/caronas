@@ -17,6 +17,7 @@
 
 
         <h:form>
+            <p:growl autoUpdate="true"/>
             <div class="container">
                 <div style="margin-top: 10%">
                     <ui:repeat value="#{travelManagedBean.listOfTravels}" var="trav">
@@ -32,12 +33,12 @@
                                     <div>Carro: #{trav.carPlate.plate}</div>
                                     <div>Data de Início: 
                                         <h:outputText value="#{travelManagedBean.actualTravel.timeInitial}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText>
                                     </div>
                                     <div>Data do fim: 
                                         <h:outputText value="#{travelManagedBean.actualTravel.timeEnd}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText>
                                     </div>
                                     <div>Descrição: #{trav.description}</div>  

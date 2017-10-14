@@ -6,10 +6,13 @@ import javax.faces.bean.ManagedBean;
 import controller.UserAccountJpaController;
 import controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import model.UserAccount;
 
 @ManagedBean(name = "UserAccountManagedBean")
 @SessionScoped
@@ -22,8 +25,8 @@ public class UserAccountManagedBean {
     //auxiliary
     private String typePassword;
     private String verifyPassword;
-
     private String adminPassword;
+    private String filterUser;
 
     public UserAccountManagedBean() {
     }
@@ -68,6 +71,17 @@ public class UserAccountManagedBean {
         ActualUserAccount = new UserAccount();
     }
 
+    //filters
+    public void filterUsersByName() {
+        listOfUserAccounts.clear();
+        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+        List<UserAccount> users = em.createQuery("SELECT a FROM UserAccount a WHERE a.userLogin LIKE :filterUser", UserAccount.class)
+                .setParameter("filterUser", "%" + filterUser + "%")
+                .getResultList();
+        listOfUserAccounts = new ArrayList<>(users);
+    }
+
+    //verification
     public boolean isAnyoneLoggedIn() {
         boolean isLogado = false;
         if (ManageSessions.getUserName() != null) {
@@ -192,6 +206,14 @@ public class UserAccountManagedBean {
 
     public void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
+    }
+
+    public String getFilterUser() {
+        return filterUser;
+    }
+
+    public void setFilterUser(String filterUser) {
+        this.filterUser = filterUser;
     }
 
 }

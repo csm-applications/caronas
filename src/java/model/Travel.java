@@ -41,7 +41,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Travel.findByDestination", query = "SELECT t FROM Travel t WHERE t.destination = :destination"),
     @NamedQuery(name = "Travel.findByDescription", query = "SELECT t FROM Travel t WHERE t.description = :description"),
     @NamedQuery(name = "Travel.findByTimeInitial", query = "SELECT t FROM Travel t WHERE t.timeInitial = :timeInitial"),
-    @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd")})
+    @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd"),
+    @NamedQuery(name = "Travel.findByIsDone", query = "SELECT t FROM Travel t WHERE t.isDone = :isDone")})
 public class Travel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,6 +64,9 @@ public class Travel implements Serializable {
     @Column(name = "time_end")
     @Temporal(TemporalType.DATE)
     private Date timeEnd;
+    @Basic(optional = false)
+    @Column(name = "isDone")
+    private boolean isDone;
     @JoinTable(name = "travel_has_user_account", joinColumns = {
         @JoinColumn(name = "travel_id_viagem", referencedColumnName = "id_travel")}, inverseJoinColumns = {
         @JoinColumn(name = "user_account_userLogin", referencedColumnName = "userLogin")})
@@ -81,11 +85,12 @@ public class Travel implements Serializable {
         this.idTravel = idTravel;
     }
 
-    public Travel(Integer idTravel, String destination, Date timeInitial, Date timeEnd) {
+    public Travel(Integer idTravel, String destination, Date timeInitial, Date timeEnd, boolean isDone) {
         this.idTravel = idTravel;
         this.destination = destination;
         this.timeInitial = timeInitial;
         this.timeEnd = timeEnd;
+        this.isDone = isDone;
     }
 
     public Integer getIdTravel() {
@@ -126,6 +131,14 @@ public class Travel implements Serializable {
 
     public void setTimeEnd(Date timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public boolean getIsDone() {
+        return isDone;
+    }
+
+    public void setIsDone(boolean isDone) {
+        this.isDone = isDone;
     }
 
     @XmlTransient

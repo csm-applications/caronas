@@ -43,8 +43,7 @@
                                             required="true" 
                                             requiredMessage="Selecione um data e horario previsto de saída" 
                                             value="#{travelManagedBean.dateInitial}" 
-                                            converter="CalendarConverter" 
-                                            pattern="dd/MM/yyyy hh:mm" 
+                                            pattern="dd/MM/yyyy" 
                                             mode="inline"/>
                             </div>
                             <div class="form-group col-md-6">
@@ -53,18 +52,16 @@
                                             id="end" 
                                             required="true" 
                                             requiredMessage="Selecione um data e horario previsto de chegada" 
-                                            converter="CalendarConverter" 
                                             value="#{travelManagedBean.dateEnd}" 
-                                            pattern="dd/MM/yyyy hh:mm" 
+                                            pattern="dd/MM/yyyy" 
                                             mode="inline"/>
                             </div>
                         </div>
                     </div>
 
                     <h5>Preencha os usuários que participarão da viagem</h5>
-                    <div class="jumbotron" >
-                        <p:pickList id="pickList" value="#{travelManagedBean.users}"  var="usrs" itemLabel="#{usrs}" itemValue="#{usrs}" />
-
+                    <div class="jumbotron form-control" >
+                        <p:pickList id="pickList" required="true" requiredMessage="Quem vai nessa viagem? Você deve preencher!" value="#{travelManagedBean.users}"  var="usrs" itemLabel="#{usrs}" itemValue="#{usrs}" />
                     </div>
                     <h:commandButton styleClass="form-control btn btn-primary" style="margin-bottom: 2%" value="Cadastrar" action="#{travelManagedBean.saveTravels()}"/>
                 </h:form>

@@ -15,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
 import model.Car;
 import model.Task;
 import model.Travel;
@@ -36,6 +37,8 @@ public class TravelManagedBean {
     private ArrayList<Car> listOfCars = new ArrayList<>();
     private ArrayList<Task> listOfTasks = new ArrayList<>();
     private ArrayList<UserAccount> listOfUserAccounts = new ArrayList<>();
+    private ArrayList<Travel> listOfActiveTravels = new ArrayList<>();
+
     //Controller
     private TravelJpaController controlTravel = new TravelJpaController(EmProvider.getInstance().getEntityManagerFactory());
     private CarJpaController controlCar = new CarJpaController(EmProvider.getInstance().getEntityManagerFactory());
@@ -61,6 +64,11 @@ public class TravelManagedBean {
         loadTravels();
         return "/public/manageTravel/ManageTravel.xhtml?faces-redirect=true";
     }
+    
+    public String gotoListActiveTravels() {
+        loadActiveTravels();
+        return "/public/manageTravel/ManageActiveTravels.xhtml?faces-redirect=true";
+    }
 
     public String gotoDetails() {
         loadTasks();
@@ -74,6 +82,13 @@ public class TravelManagedBean {
 
     public void loadCars() {
         listOfCars = new ArrayList(controlCar.findCarEntities());
+    }
+
+    public void loadActiveTravels() {
+        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+        List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
+                .getResultList();
+        listOfActiveTravels = new ArrayList<Travel>(travel);
     }
 
     public void loadUsers() {
@@ -102,6 +117,7 @@ public class TravelManagedBean {
             actualTravel.setCarPlate(actualCar);
             actualTravel.setTimeInitial(dateInitial);
             actualTravel.setTimeEnd(dateEnd);
+            actualTravel.setIsDone(false);
             controlTravel.create(actualTravel);
             return gotoListTravels();
         } catch (Exception e) {
@@ -146,6 +162,15 @@ public class TravelManagedBean {
         }
     }
 
+    public void setTravelDone() {
+        try {
+            actualTravel.setIsDone(true);
+            controlTravel.edit(actualTravel);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void saveTask() {
         UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
         try {
@@ -169,12 +194,20 @@ public class TravelManagedBean {
     }
 
     public void destroyTravels() {
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
         try {
-            for (Task t : actualTravel.getTaskList()) {
-                controlTask.destroy(t.getIdTask());
+            if (myself.getIsAdministrator()) {
+                for (Task t : actualTravel.getTaskList()) {
+                    controlTask.destroy(t.getIdTask());
+                }
+                controlTravel.destroy(actualTravel.getIdTravel());
+                loadTravels();
+            } else {
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opa! você não tem permissão para remover viagens", "!"));
+                return;
             }
-            controlTravel.destroy(actualTravel.getIdTravel());
-            loadTravels();
+
         } catch (IllegalOrphanException ex) {
             Logger.getLogger(TravelManagedBean.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NonexistentEntityException ex) {
@@ -294,4 +327,11 @@ public class TravelManagedBean {
         this.users = users;
     }
 
+    public ArrayList<Travel> getListOfActiveTravels() {
+        return listOfActiveTravels;
+    }
+
+    public void setListOfActiveTravels(ArrayList<Travel> listOfActiveTravels) {
+        this.listOfActiveTravels = listOfActiveTravels;
+    }
 }

@@ -24,12 +24,12 @@
                         <div> Descrição: #{travelManagedBean.actualTravel.description}</div>
                         <div> Início da viagem: 
                             <h:outputText value="#{travelManagedBean.actualTravel.timeInitial}">
-                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
                         </div>
                         <div> Fim da viagem: 
                             <h:outputText value="#{travelManagedBean.actualTravel.timeEnd}">
-                                <f:convertDateTime pattern="dd/MM/yyyy hh:mm"/>
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
                         </div>
                         <h:form id="formUsersInTravel">
@@ -51,7 +51,21 @@
                             </div>
                         </h:form>
                         <h:form>
-                            <p:commandButton update=":formUsersInTravel" value="Quero ir também!" style="margin-top: 1%;" action="#{travelManagedBean.submitToThisTrip()}" styleClass="btn btn-success"/>
+                            <div style="float: left; margin: 4%; width: 96%">
+                                <p:selectBooleanButton offLabel="Esta viagem está diponível" onLabel="Esta viagem está marcada como terminada" value="#{travelManagedBean.actualTravel.isDone}"/>
+                            </div>
+                            <p:commandButton 
+                                update=":formUsersInTravel" 
+                                value="Quero ir também!" 
+                                style="margin-top: 1%;" 
+                                action="#{travelManagedBean.submitToThisTrip()}" 
+                                styleClass="btn btn-success"/>
+                            <p:commandButton 
+                                update="@form" 
+                                value="alterar status para realizada" 
+                                style="margin-top: 1%;" 
+                                action="#{travelManagedBean.setTravelDone()}" 
+                                styleClass="btn btn-warning"/>
                         </h:form>
                     </div>
                 </div>

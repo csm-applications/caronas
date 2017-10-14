@@ -5,9 +5,12 @@
         <group>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/detailsTravel.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/addTravel.xhtml</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/ManageTravel.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/view/TravelManagedBean.java</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/editPermissions.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/view/UserAccountManagedBean.java</file>
-            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/resources/CSS/style.css</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/converters/CalendarConverter.java</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/managePermissions.xhtml</file>
         </group>
     </open-files>
 </project-private>
