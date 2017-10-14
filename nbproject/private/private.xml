@@ -3,14 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/model/Travel.java</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/detailsTravel.xhtml</file>
-            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/addTravel.xhtml</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/includes/NavBar.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/ManageTravel.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/view/TravelManagedBean.java</file>
-            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/editPermissions.xhtml</file>
             <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/view/UserAccountManagedBean.java</file>
-            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/src/java/converters/CalendarConverter.java</file>
-            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/managePermissions.xhtml</file>
+            <file>file:/C:/Users/USER/Documents/GitHub/Caronas/web/public/manageTravel/ManageActiveTravels.xhtml</file>
         </group>
     </open-files>
 </project-private>

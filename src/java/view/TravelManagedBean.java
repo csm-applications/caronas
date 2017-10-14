@@ -37,7 +37,6 @@ public class TravelManagedBean {
     private ArrayList<Car> listOfCars = new ArrayList<>();
     private ArrayList<Task> listOfTasks = new ArrayList<>();
     private ArrayList<UserAccount> listOfUserAccounts = new ArrayList<>();
-    private ArrayList<Travel> listOfActiveTravels = new ArrayList<>();
 
     //Controller
     private TravelJpaController controlTravel = new TravelJpaController(EmProvider.getInstance().getEntityManagerFactory());
@@ -49,6 +48,11 @@ public class TravelManagedBean {
     private Date dateInitial;
     private Date dateEnd;
     private DualListModel<String> users = new DualListModel<>();
+
+    //filters
+    private String filterDestination;
+    private Car filterCar;
+    private String filterActivation;
 
     public TravelManagedBean() {
     }
@@ -63,11 +67,6 @@ public class TravelManagedBean {
     public String gotoListTravels() {
         loadTravels();
         return "/public/manageTravel/ManageTravel.xhtml?faces-redirect=true";
-    }
-    
-    public String gotoListActiveTravels() {
-        loadActiveTravels();
-        return "/public/manageTravel/ManageActiveTravels.xhtml?faces-redirect=true";
     }
 
     public String gotoDetails() {
@@ -84,13 +83,34 @@ public class TravelManagedBean {
         listOfCars = new ArrayList(controlCar.findCarEntities());
     }
 
-    public void loadActiveTravels() {
-        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
-        List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
-                .getResultList();
-        listOfActiveTravels = new ArrayList<Travel>(travel);
+    //filters
+    public void filterByActivation() {
+        if ("naoFinalizadas".equals(filterActivation)) {
+            EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+            List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
+                    .getResultList();
+            listOfTravels = new ArrayList<Travel>(travel);
+            return;
+        }
+        listOfTravels = new ArrayList<>(controlTravel.findTravelEntities());
     }
 
+    public void filterTravelsByDestination() {
+        listOfTravels.clear();
+        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+        List<Travel> travels = em.createQuery("SELECT a FROM Travel a WHERE a.destination LIKE :destination", Travel.class)
+                .setParameter("destination", "%" + filterDestination + "%")
+                .getResultList();
+        listOfTravels = new ArrayList<>(travels);
+    }
+
+    public void filterByCar() {
+        listOfTravels.clear();
+        List<Travel> travels = actualCar.getTravelList();
+        listOfTravels = new ArrayList<>(travels);
+    }
+
+    // loads
     public void loadUsers() {
         listOfUserAccounts = new ArrayList(controlUser.findUserAccountEntities());
         List<String> source = new ArrayList<>();
@@ -107,6 +127,7 @@ public class TravelManagedBean {
         listOfTasks = new ArrayList<>(actualTravel.getTaskList());
     }
 
+    //saves
     public String saveTravels() {
         List<UserAccount> usersToAdd = new ArrayList<>();
         for (String a : users.getTarget()) {
@@ -184,6 +205,7 @@ public class TravelManagedBean {
         }
     }
 
+    //edits
     public String editUserAccount() {
         try {
             controlTravel.edit(actualTravel);
@@ -193,6 +215,7 @@ public class TravelManagedBean {
         return gotoListTravels();
     }
 
+    //destroy
     public void destroyTravels() {
         UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
         try {
@@ -239,6 +262,7 @@ public class TravelManagedBean {
         return false;
     }
 
+    //Gets and sets
     public ArrayList<Travel> getListOfTravels() {
         return listOfTravels;
     }
@@ -327,11 +351,27 @@ public class TravelManagedBean {
         this.users = users;
     }
 
-    public ArrayList<Travel> getListOfActiveTravels() {
-        return listOfActiveTravels;
+    public String getFilterDestination() {
+        return filterDestination;
     }
 
-    public void setListOfActiveTravels(ArrayList<Travel> listOfActiveTravels) {
-        this.listOfActiveTravels = listOfActiveTravels;
+    public void setFilterDestination(String filterDestination) {
+        this.filterDestination = filterDestination;
+    }
+
+    public Car getFilterCar() {
+        return filterCar;
+    }
+
+    public void setFilterCar(Car filterCar) {
+        this.filterCar = filterCar;
+    }
+
+    public String getFilterActivation() {
+        return filterActivation;
+    }
+
+    public void setFilterActivation(String filterActivation) {
+        this.filterActivation = filterActivation;
     }
 }
