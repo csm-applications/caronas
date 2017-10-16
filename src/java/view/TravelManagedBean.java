@@ -136,7 +136,13 @@ public class TravelManagedBean {
         try {
             actualTravel.setUserAccountList(usersToAdd);
             actualTravel.setCarPlate(actualCar);
-            actualTravel.setTimeInitial(dateInitial);
+            if (dateInitial != null) {
+                actualTravel.setTimeInitial(dateInitial);
+            } else {
+                dateInitial.setTime(System.currentTimeMillis());
+                actualTravel.setTimeInitial(dateInitial);
+
+            }
             actualTravel.setTimeEnd(dateEnd);
             actualTravel.setIsDone(false);
             controlTravel.create(actualTravel);
@@ -150,9 +156,9 @@ public class TravelManagedBean {
     public void submitToThisTrip() {
         List<UserAccount> listToEdit = actualTravel.getUserAccountList();
         try {
-            UserAccount toAdd = controlUser.findUserAccount(ManageSessions.getUserName());
+            UserAccount toAdd = controlUser.findUserAccount(ManageSessions.getUserId());
             for (UserAccount a : listToEdit) {
-                if (a.getUserLogin().equals(ManageSessions.getUserName())) {
+                if (a.getUserLogin().equals(ManageSessions.getUserId())) {
                     FacesContext context = FacesContext.getCurrentInstance();
                     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Você já está nessa viagem", "!"));
                     return;
@@ -166,7 +172,7 @@ public class TravelManagedBean {
     }
 
     public void removeUserFromTravel() {
-        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         List<UserAccount> listToEdit = actualTravel.getUserAccountList();
         try {
             if (isThisMyself(actualUserAccount) || myself.getIsAdministrator()) {
@@ -193,7 +199,7 @@ public class TravelManagedBean {
     }
 
     public void saveTask() {
-        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         try {
             actualTask.setUseraccountuserLogin(myself);
             actualTask.setTravelIdTravel(actualTravel);
@@ -217,7 +223,7 @@ public class TravelManagedBean {
 
     //destroy
     public void destroyTravels() {
-        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         try {
             if (myself.getIsAdministrator()) {
                 for (Task t : actualTravel.getTaskList()) {
@@ -239,7 +245,7 @@ public class TravelManagedBean {
     }
 
     public void destroyTask() {
-        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserName());
+        UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         try {
             if (isThisMyself(actualTask.getUseraccountuserLogin()) || myself.getIsAdministrator()) {
                 controlTask.destroy(actualTask.getIdTask());
@@ -255,7 +261,7 @@ public class TravelManagedBean {
     }
 
     public boolean isThisMyself(UserAccount toVerify) {
-        String userInSession = ManageSessions.getUserName();
+        String userInSession = ManageSessions.getUserId();
         if (userInSession.equals(toVerify.getUserLogin())) {
             return true;
         }

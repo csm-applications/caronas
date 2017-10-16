@@ -35,9 +35,14 @@
                             </li>
                         </ul>
                         <ul class="navbar-nav">
-                            <li>
-                                <p:commandLink styleClass="nav-link" value="Sair" action="#{UserAccountManagedBean.logout()}"/>
+                            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                                <li>
+                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#{session.getValue('username')}</a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                        <h:commandLink styleClass="dropdown-item" value="Sair" action="#{UserAccountManagedBean.logout()}"/>
+                                    </div>
                             </li>
+                            </div>
                         </ul>
                     </div>
                 </c:when>

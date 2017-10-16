@@ -84,7 +84,7 @@ public class UserAccountManagedBean {
     //verification
     public boolean isAnyoneLoggedIn() {
         boolean isLogado = false;
-        if (ManageSessions.getUserName() != null) {
+        if (ManageSessions.getUserId() != null) {
             isLogado = true;
         }
         return isLogado;
@@ -93,7 +93,8 @@ public class UserAccountManagedBean {
     public String validateUsernamePassword() {
         if (validateUser(ActualUserAccount)) {
             HttpSession session = ManageSessions.getSession();
-            session.setAttribute("username", ActualUserAccount.getUserLogin());
+            session.setAttribute("username", ActualUserAccount.getUserName());
+            session.setAttribute("userid", ActualUserAccount.getUserLogin());
             return "/public/manageTravel/ManageTravel?faces-redirect=true";
         } else {
 
@@ -126,7 +127,8 @@ public class UserAccountManagedBean {
                 ActualUserAccount.setPassword(typePassword);
                 controlUserAccount.create(ActualUserAccount);
                 HttpSession session = ManageSessions.getSession();
-                session.setAttribute("username", ActualUserAccount.getUserLogin());
+                session.setAttribute("username", ActualUserAccount.getUserName());
+                session.setAttribute("userid", ActualUserAccount.getUserLogin());
                 return "/public/manageTravel/ManageTravel?faces-redirect=true";
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
@@ -166,6 +168,10 @@ public class UserAccountManagedBean {
     public void destroyUserAccounts() throws NonexistentEntityException {
         controlUserAccount.destroy(ActualUserAccount.getUserLogin());
         gotoListUsers();
+    }
+    public String UserMessage(){
+        String userName = ManageSessions.getUserName();
+        return "Olá "+ userName;
     }
 
     public UserAccount getActualUserAccount() {
@@ -215,5 +221,4 @@ public class UserAccountManagedBean {
     public void setFilterUser(String filterUser) {
         this.filterUser = filterUser;
     }
-
 }
