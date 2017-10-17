@@ -46,12 +46,14 @@ public class UserAccountManagedBean {
         return "/public/manageAccounts/ManageUserAccounts.xhtml?faces-redirect=true";
     }
 
-    public String gotoEditUsers() {
-        return "/editPermissions.xhtml?faces-redirect=true";
+    public String gotoEditMyProfile() {
+        String userlogin = ManageSessions.getUserId();
+        ActualUserAccount = controlUserAccount.findUserAccount(userlogin);
+        return "/public/manageAccounts/EditMyProfile.xhtml?faces-redirect=true";
     }
 
     public String gotoManageTravel() {
-        return "/public/manageAccounts/EditAccounts.xhtml?faces-redirect=true";
+        return "/public/manageAccounts/ManageTravels.xhtml?faces-redirect=true";
     }
 
     public String gotoManagePermissions() {
@@ -115,6 +117,7 @@ public class UserAccountManagedBean {
         }
         if (validate.getUserLogin().equals(comparar.getUserLogin())
                 && validate.getPassword().equals(comparar.getPassword())) {
+            ActualUserAccount = validate;
             return true;
         }
         return false;
@@ -158,20 +161,31 @@ public class UserAccountManagedBean {
 
     public String editUserAccount() {
         try {
-            controlUserAccount.edit(ActualUserAccount);
+            if (typePassword != null && typePassword.equals(verifyPassword)) {
+                ActualUserAccount.setPassword(typePassword);
+                controlUserAccount.edit(ActualUserAccount);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return gotoListUsers();
     }
 
-    public void destroyUserAccounts() throws NonexistentEntityException {
-        controlUserAccount.destroy(ActualUserAccount.getUserLogin());
-        gotoListUsers();
+    public String destroyUserAccounts() throws NonexistentEntityException {
+        if (AdminPass.adminPass.equals(adminPassword)) {
+            controlUserAccount.destroy(ActualUserAccount.getUserLogin());
+            adminPassword = "";
+            return gotoManagePermissions();
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage("Opa! digite a senha do administrador", "Erro"));
+        }
+        return "#";
     }
-    public String UserMessage(){
+
+    public String UserMessage() {
         String userName = ManageSessions.getUserName();
-        return "Olá "+ userName;
+        return "Olá " + userName;
     }
 
     public UserAccount getActualUserAccount() {

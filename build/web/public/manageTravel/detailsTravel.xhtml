@@ -52,20 +52,23 @@
                         </h:form>
                         <h:form>
                             <div style="float: left; margin: 4%; width: 96%">
-                                <p:selectBooleanButton offLabel="Esta viagem está diponível" onLabel="Esta viagem está marcada como terminada" value="#{travelManagedBean.actualTravel.isDone}"/>
+                                <p:selectBooleanButton disabled="true" offLabel="Esta viagem está diponível" onLabel="Esta viagem está marcada como terminada" value="#{travelManagedBean.actualTravel.isDone}"/>
                             </div>
-                            <p:commandButton 
-                                update=":formUsersInTravel" 
+                            <h:commandButton   
                                 value="Quero ir também!" 
-                                style="margin-top: 1%;" 
+                                style="margin: 1%;" 
                                 action="#{travelManagedBean.submitToThisTrip()}" 
-                                styleClass="btn btn-success"/>
-                            <p:commandButton 
-                                update="@form" 
+                                styleClass="btn btn-success">
+                                <p:ajax update=":formUsersInTravel" />
+                            </h:commandButton>
+                            <h:commandButton 
+                                
                                 value="alterar status para realizada" 
-                                style="margin-top: 1%;" 
+                                style="margin: 1%;" 
                                 action="#{travelManagedBean.setTravelDone()}" 
-                                styleClass="btn btn-warning"/>
+                                styleClass="btn btn-warning">
+                                <p:ajax update="@form" />
+                            </h:commandButton> 
                         </h:form>
                     </div>
                 </div>
@@ -96,8 +99,9 @@
                                 <h:form>
                                     <h:inputText  required="true" requiredMessage="É necessário escolher dar um título a sua Tarefa" styleClass="form-control" a:placeholder="Digite o nome da tarefa" value="#{travelManagedBean.actualTask.name}"/>
                                     <h:inputTextarea required="true" requiredMessage="É necessário descrever sua tarefa"     styleClass="form-control" rows="5" a:placeholder="Descreva sua tarefa" value="#{travelManagedBean.actualTask.description}"/>
-                                    <p:commandButton update=":formTasks @form" style="margin-top: 1%;" action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa">
-                                    </p:commandButton>
+                                    <h:commandButton  style="margin-top: 1%;" action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa">
+                                        <p:ajax update=":formTasks @form"/>
+                                    </h:commandButton>
                                 </h:form>
                             </div>                        
                         </div>

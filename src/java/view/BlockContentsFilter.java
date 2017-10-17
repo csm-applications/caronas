@@ -29,7 +29,7 @@ public class BlockContentsFilter implements Filter {
             
             if (reqURI.contains("javax.faces.resource")
                     || reqURI.contains("/index.xhtml")
-                    || (ses != null && ses.getAttribute("username") != null)
+                    || (ses != null && ses.getAttribute("userid") != null)
                     || reqURI.contains("/CSS")
                     || reqURI.contains("/JS")
                     || reqURI.contains("/images")) {

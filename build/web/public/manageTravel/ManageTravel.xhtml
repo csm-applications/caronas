@@ -8,7 +8,7 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <f:metadata>
-        <f:viewAction action="#{travelManagedBean.loadTravels()}"/>
+        <f:viewAction action="#{travelManagedBean.findActiveTravels()}"/>
         <f:viewAction action="#{travelManagedBean.loadCars()}"/>
     </f:metadata>
 
@@ -42,8 +42,8 @@
                             <h:outputLabel for="selectSearchOption" styleClass="form-control col-sm-2" style="margin-bottom: 0" value="Selecione  uma opção"/>
                             <h:selectOneMenu id="selectSearchOption" styleClass="form-control col-sm-10" value="#{travelManagedBean.filterActivation}">
                                 <p:ajax update="listOftravels" event="valueChange" listener="#{travelManagedBean.filterByActivation()}"/>
-                                <f:selectItem itemLabel="Todas as viagens" itemValue="todas"/>
                                 <f:selectItem itemLabel="Não finalizadas" itemValue="naoFinalizadas"/>
+                                <f:selectItem itemLabel="Todas as viagens" itemValue="todas"/>
                             </h:selectOneMenu>
                         </div>
 

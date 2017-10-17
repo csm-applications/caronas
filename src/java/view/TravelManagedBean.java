@@ -84,6 +84,15 @@ public class TravelManagedBean {
     }
 
     //filters
+    
+    public void findActiveTravels() {
+        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+            List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
+                    .getResultList();
+            listOfTravels = new ArrayList<Travel>(travel);
+            return;
+    }
+    
     public void filterByActivation() {
         if ("naoFinalizadas".equals(filterActivation)) {
             EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();

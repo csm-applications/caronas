@@ -35,7 +35,7 @@
                             <p:commandButton update="@form" icon="ui-icon-close"  action="#{UserAccountManagedBean.destroyUserAccounts()}" >
                                 <f:setPropertyActionListener target="#{UserAccountManagedBean.actualUserAccount}" value="#{acc}"/>
                             </p:commandButton>
-                            <p:commandButton update="@form" icon="ui-icon-pencil"  action="#{UserAccountManagedBean.gotoEditUsers()}" >
+                            <p:commandButton update="@form" icon="ui-icon-pencil"  action="#{UserAccountManagedBean.gotoEditMyProfile()}" >
                                 <f:setPropertyActionListener target="#{UserAccountManagedBean.actualUserAccount}" value="#{acc}"/>
                             </p:commandButton>
                         </h:column>

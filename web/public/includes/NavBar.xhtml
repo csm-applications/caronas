@@ -13,8 +13,8 @@
 
             <c:choose>
                 <c:when test="#{UserAccountManagedBean.anyoneLoggedIn}">
-                    
-                    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+
+                    <div class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Viagens</a>
@@ -35,13 +35,14 @@
                             </li>
                         </ul>
                         <ul class="navbar-nav">
-                            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                                <li>
-                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#{session.getValue('username')}</a>
+                            <div class="collapse navbar-collapse">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Olá, #{session.getValue('username')}</a>
                                     <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                        <h:commandLink styleClass="dropdown-item" value="Meu perfil" action="#{UserAccountManagedBean.gotoEditMyProfile()}"/>
                                         <h:commandLink styleClass="dropdown-item" value="Sair" action="#{UserAccountManagedBean.logout()}"/>
                                     </div>
-                            </li>
+                                </li>
                             </div>
                         </ul>
                     </div>

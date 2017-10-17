@@ -25,44 +25,54 @@
                         </div>
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="Digite sua senha"></h:outputText>
-                            <h:inputText id="senhas" styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.typePassword}"></h:inputText>
+                            <h:inputText id="senhas" disabled="true" styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.typePassword}"></h:inputText>
                         </div>
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="Digite a sua senha novamente"></h:outputText>
-                            <h:inputText styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.verifyPassword}"></h:inputText>
+                            <h:inputText styleClass="form-control" disabled="true" a:type="password" value="#{UserAccountManagedBean.verifyPassword}"></h:inputText>
                         </div>
                     </div>
 
                     <div class="jumbotron">
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="Nome"></h:outputText>
-                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.userName}"></h:inputText>
+                            <h:inputText styleClass="form-control" disabled="true" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.userName}"></h:inputText>
                         </div>
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="Telefone"></h:outputText>
-                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="tel" value="#{UserAccountManagedBean.actualUserAccount.phone}"></h:inputText>
+                            <h:inputText styleClass="form-control" disabled="true" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="tel" value="#{UserAccountManagedBean.actualUserAccount.phone}"></h:inputText>
                         </div>
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="Setor de trabalho"></h:outputText>
-                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.sector}"></h:inputText>
+                            <h:inputText styleClass="form-control" disabled="true" required="true" requiredMessage="Este campo é de preenchimento obrigatório" value="#{UserAccountManagedBean.actualUserAccount.sector}"></h:inputText>
                         </div>
                         <div class="form-group">
                             <h:outputText styleClass="form-control" value="E-mail"></h:outputText>
-                            <h:inputText styleClass="form-control" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="email" value="#{UserAccountManagedBean.actualUserAccount.email}"></h:inputText>
+                            <h:inputText styleClass="form-control" disabled="true" required="true" requiredMessage="Este campo é de preenchimento obrigatório" a:type="email" value="#{UserAccountManagedBean.actualUserAccount.email}"></h:inputText>
                         </div>
-                        <div class="form-group">
-                            <h:outputText styleClass="form-control" value="Permissões de administrador"></h:outputText>
-                            <p:selectBooleanCheckbox styleClass="form-control" value="#{UserAccountManagedBean.actualUserAccount.isAdministrator}"/>
-                        </div>
+
                         <div class="jumbotron alert-danger">
                             <h5>Esta ação necessita da senha do administrador</h5>
-                            <div class="form-group">
+                            
+                             <div class="form-group">
                                 <h:outputLabel for="adminPassword" styleClass="form-control" value="Senha do administrador"/>
-                                <h:inputText id="adminPassword" styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.adminPassword}"/>
+                                <h:inputText id="adminPassword" a:placeholder="Digite a senha do administrador" required="true" requiredMessage="Digite a senha do administrador para realizar qualquer ação" styleClass="form-control" a:type="password" value="#{UserAccountManagedBean.adminPassword}"/>
                             </div>
+
+                            <h5>Permissões:</h5>
+                            <div class="form-group">
+                                 <p:selectBooleanCheckbox styleClass="form-control" itemLabel="Conceder permissões de administrador" value="#{UserAccountManagedBean.actualUserAccount.isAdministrator}"/>
+                            </div>
+                            
+                            <h5>Exclusão da conta</h5>
+                            <div class="form-group">
+                                 <h:commandButton styleClass="btn btn-danger" value="Excluir esta conta" action="#{UserAccountManagedBean.destroyUserAccounts()}" />
+                            </div>
+
+                           
                         </div>
                     </div>
-                    <p:commandButton styleClass="form-control btn btn-primary" style="margin-bottom: 1%" value="Finalizar alterações" action="#{UserAccountManagedBean.editPermissions()}"></p:commandButton>
+                    <h:commandButton styleClass="form-control btn btn-primary" style="margin-bottom: 1%" value="Finalizar alterações" action="#{UserAccountManagedBean.editPermissions()}"/>
                 </h:form>
             </div>
         </div>
