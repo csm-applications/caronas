@@ -1,13 +1,20 @@
 package view;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import javax.faces.bean.ManagedBean;
 import controller.CarJpaController;
 import controller.SectorJpaController;
 import controller.UserAccountJpaController;
 import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -66,6 +73,68 @@ public class CarManagedBean {
     //loads
     public void loadCars() {
         listOfCars = new ArrayList(controlCar.findCarEntities());
+        Calendar cal = Calendar.getInstance();
+        Date today = cal.getTime();
+        for (Car c : listOfCars) {
+            List<Travel> listOfTravelByCar = c.getTravelList();
+            for (Travel t : listOfTravelByCar) {
+                if (removeTime(t.getDateInitial()).equals(removeTime(today)) && isHappeningNow(t.getTimeInitial(), t.getTimeEnd())) {
+                    c.setSituation("Ocupado");
+                } else {
+                    c.setSituation("Livre");
+                }
+                try {
+                    controlCar.edit(c);
+                } catch (NonexistentEntityException ex) {
+                    Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    public Date removeTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    public boolean isHappeningNow(String timeInitial, String timeEnd) {
+        
+        
+        Calendar c = Calendar.getInstance();
+        Date now = c.getTime();
+        
+        //creating timeinitial in date type
+        Calendar ti = Calendar.getInstance();
+        ti.setTime(now);
+        ti.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeInitial.substring(0,timeInitial.indexOf(":"))));
+        ti.set(Calendar.MINUTE, Integer.parseInt(timeInitial.substring(timeInitial.indexOf(":")+1)));
+        ti.set(Calendar.SECOND, 0);
+        ti.set(Calendar.MILLISECOND, 0);
+        
+        //creating timeend in date type
+        Calendar te = Calendar.getInstance();
+        te.setTime(now);
+        te.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeEnd.substring(0,timeEnd.indexOf(":"))));
+        te.set(Calendar.MINUTE,Integer.parseInt(timeEnd.substring(timeEnd.indexOf(":")+1)));
+        te.set(Calendar.SECOND, 0);
+        te.set(Calendar.MILLISECOND, 0);
+        
+        
+        //today
+        
+        
+        if (ti.compareTo(c) < 0 && te.compareTo(c) > 0) {
+            return true;
+        }
+        
+        return false;
     }
 
     public void loadSectors() {
@@ -81,7 +150,7 @@ public class CarManagedBean {
         listOfCars.clear();
         EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
         List<Car> cars = em.createQuery("SELECT c FROM Car c WHERE c.situation = :situation", Car.class)
-                .setParameter("situation", filterSituation )
+                .setParameter("situation", filterSituation)
                 .getResultList();
         listOfCars = new ArrayList<>(cars);
     }

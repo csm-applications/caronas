@@ -19,18 +19,20 @@
                     <h2 style="text-align: center">Detalhes da viagem</h2>
                     <h:graphicImage alt="carona" name="images/travel.jpg" class="travelIconDetails" />
                     <div class="detailsTravelElements">
-                        <div> Carro utilizado: #{travelManagedBean.actualTravel.carPlate}</div>
+                        <div> Carro utilizado: #{travelManagedBean.actualTravel.carPlate.plate}</div>
                         <div> Destino: #{travelManagedBean.actualTravel.destination}</div>
                         <div> Descrição: #{travelManagedBean.actualTravel.description}</div>
                         <div> Início da viagem: 
-                            <h:outputText value="#{travelManagedBean.actualTravel.timeInitial}">
+                            <h:outputText value="#{travelManagedBean.actualTravel.dateInitial}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
+                            #{travelManagedBean.actualTravel.timeInitial}
                         </div>
                         <div> Fim da viagem: 
-                            <h:outputText value="#{travelManagedBean.actualTravel.timeEnd}">
+                            <h:outputText value="#{travelManagedBean.actualTravel.dateEnd}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
+                            #{travelManagedBean.actualTravel.timeEnd}
                         </div>
                         <h:form id="formUsersInTravel">
                             <div class="userListContainer">
@@ -62,11 +64,18 @@
                                 <p:ajax update=":formUsersInTravel" />
                             </h:commandButton>
                             <h:commandButton 
-                                
+
                                 value="alterar status para realizada" 
                                 style="margin: 1%;" 
                                 action="#{travelManagedBean.setTravelDone()}" 
                                 styleClass="btn btn-warning">
+                                <p:ajax update="@form" />
+                            </h:commandButton>
+                            <h:commandButton 
+                                value="Editar viagem" 
+                                style="margin: 1%;" 
+                                action="#{travelManagedBean.gotoEditTravel()}" 
+                                styleClass="btn btn-primary">
                                 <p:ajax update="@form" />
                             </h:commandButton> 
                         </h:form>
@@ -91,21 +100,20 @@
                             </div>
                         </ui:repeat>
                     </h:form>
-                    <div class="formInsertTask">
+                    <h:form id="formAddTask">
 
-                        <div >
-                            <h3>Tarefas</h3>
-                            <div class="form-group">
-                                <h:form>
+                        <div class="formInsertTask">
+
+                            <div >
+                                <h3>Tarefas</h3>
+                                <div class="form-group">
                                     <h:inputText  required="true" requiredMessage="É necessário escolher dar um título a sua Tarefa" styleClass="form-control" a:placeholder="Digite o nome da tarefa" value="#{travelManagedBean.actualTask.name}"/>
                                     <h:inputTextarea required="true" requiredMessage="É necessário descrever sua tarefa"     styleClass="form-control" rows="5" a:placeholder="Descreva sua tarefa" value="#{travelManagedBean.actualTask.description}"/>
-                                    <h:commandButton  style="margin-top: 1%;" action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa">
-                                        <p:ajax update=":formTasks @form"/>
-                                    </h:commandButton>
-                                </h:form>
-                            </div>                        
+                                    <p:commandButton update="formTasks @form" style="margin-top: 1%;" action="#{travelManagedBean.saveTask()}" styleClass="btn btn-primary form-control" value="Cadastrar Tarefa"/>
+                                </div>                        
+                            </div>
                         </div>
-                    </div>
+                    </h:form>
                 </div>
 
             </div>

@@ -14,11 +14,11 @@
         <h:form>
             <div class="container">
                 <div style="margin-top: 9%">
-                    <div class="jumbotron form-group">
+                    <div class="jumbotron form-group alert-info">
                         <h5>Lista de contatos</h5>
-                        <p:inputText a:placeholder="Digite sua pesquisa aqui" styleClass="form-control" value="#{UserAccountManagedBean.filterUser}">
+                        <h:inputText a:placeholder="Digite sua pesquisa aqui" styleClass="form-control" value="#{UserAccountManagedBean.filterUser}">
                             <p:ajax update="@form" event="keyup" listener="#{UserAccountManagedBean.filterUsersByName()}"/>
-                        </p:inputText>
+                        </h:inputText>
                     </div>
                     <h:dataTable styleClass="table table-bordered table-hover" value="#{UserAccountManagedBean.listOfUserAccounts}" var="acc">
                         <h:column >

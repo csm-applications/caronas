@@ -8,7 +8,7 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <f:metadata>
-        <f:viewAction action="#{travelManagedBean.findActiveTravels()}"/>
+        <f:viewAction action="#{travelManagedBean.filterByActivation()}"/>
         <f:viewAction action="#{travelManagedBean.loadCars()}"/>
     </f:metadata>
 
@@ -45,6 +45,12 @@
                                 <f:selectItem itemLabel="Não finalizadas" itemValue="naoFinalizadas"/>
                                 <f:selectItem itemLabel="Todas as viagens" itemValue="todas"/>
                             </h:selectOneMenu>
+                            
+                            <h:outputLabel for="selectDateToFilter" styleClass="form-control col-sm-2" style="margin-bottom: 0" value="Selecione uma data para filtrar"/>
+                            <p:calendar id="selectDateToFilter" value="#{travelManagedBean.filterDate}" mode="inline">
+                                <p:ajax update="listOftravels" event="dateSelect" listener="#{travelManagedBean.filterByDate()}"/>
+                            </p:calendar>
+                            
                         </div>
 
                     </div>
@@ -61,17 +67,16 @@
                                 <div class="right">
                                     <div>Destino: #{trav.destination}</div>
                                     <div>Carro: #{trav.carPlate.plate}</div>
-                                    <div>Data de Início: 
-                                        <h:outputText value="#{travelManagedBean.actualTravel.dateInitial}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
-                                        </h:outputText>
+                                    <div>Data de Início:
+                                        <h:outputText value="#{trav.dateInitial}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText> #{trav.timeInitial}
                                     </div>
                                     <div>Data do fim: 
-                                        <h:outputText value="#{travelManagedBean.actualTravel.dateEnd}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
-                                        </h:outputText>
+                                        <h:outputText value="#{trav.dateEnd}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText> #{trav.timeEnd}
                                     </div>
-                                    <div>Descrição: #{trav.description}</div>  
                                 </div>
                             </h:commandLink>
                             <p:commandButton update="@form" value="Cancelar viagem" icon="ui-icon-close" action="#{travelManagedBean.destroyTravels()}" styleClass="btn btn-danger" style="margin-top: 1%">

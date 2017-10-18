@@ -9,19 +9,22 @@ import model.Car;
 import model.Task;
 import model.UserAccount;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-17T16:54:42")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-18T21:54:18")
 @StaticMetamodel(Travel.class)
 public class Travel_ { 
 
     public static volatile SingularAttribute<Travel, Integer> idTravel;
+    public static volatile SingularAttribute<Travel, String> timeEnd;
     public static volatile SingularAttribute<Travel, UserAccount> owner;
-    public static volatile SingularAttribute<Travel, Car> carPlate;
+    public static volatile SingularAttribute<Travel, Boolean> isRideAllowed;
+    public static volatile SingularAttribute<Travel, String> timeInitial;
     public static volatile SingularAttribute<Travel, String> destination;
     public static volatile SingularAttribute<Travel, String> description;
     public static volatile ListAttribute<Travel, Task> taskList;
     public static volatile SingularAttribute<Travel, Date> dateInitial;
     public static volatile SingularAttribute<Travel, Date> dateEnd;
-    public static volatile ListAttribute<Travel, UserAccount> userAccountList;
     public static volatile SingularAttribute<Travel, Boolean> isDone;
+    public static volatile SingularAttribute<Travel, Car> carPlate;
+    public static volatile ListAttribute<Travel, UserAccount> userAccountList;
 
 }

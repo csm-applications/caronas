@@ -1,9 +1,9 @@
 .texto-footer{
     float: left;
     padding: 1%;
+    margin-top: 3%;
     color: #3e3e3e;
     font-size: 12px; 
-    width: 100%;
     font-family: sans-serif;
     text-align: center;
 }
@@ -18,9 +18,7 @@
 }
 
 .endereco{
-    float: left;
-    margin-left: 3%;
-    width: 30%;
+    margin-top: 3%;
     font-size: 15px;
     color: #3e3e3e;
     font-family: sans-serif;
@@ -28,17 +26,13 @@
 }
 
 .compartilhe{
+    margin-top: 3%;
     text-align: center;
-    float: left; 
-    margin-left: 3%;
-    width: 30%;
 }
 
 .contatos{
+    margin-top: 3%;
     text-align: center;
-    margin-left: 3%;
-    width: 30%;
-    float: left;
 }
 
 .footer h4{
@@ -49,7 +43,7 @@
     color: #fff;
     font-weight: 100;
     border-radius: 6px 6px 6px 6px;
-    background-color: #373c42;
+    background-color: #d6d8d9;
 }
 
 
@@ -69,7 +63,15 @@
 
 .footer {
     float: left;
-    background-color: #fafafa;
+    margin-top: 30px;
+    background-color: #f1f1f1;
+}
+
+.nav-item-personal{
+    margin: 5px; 
+    padding: 5px; 
+    background-color: #575757; 
+    border-radius: 5px 5px 5px 5px;
 }
 
 .index-carona-container{

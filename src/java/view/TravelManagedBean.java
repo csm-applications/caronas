@@ -6,7 +6,9 @@ import controller.TravelJpaController;
 import controller.UserAccountJpaController;
 import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -47,12 +49,17 @@ public class TravelManagedBean {
     //auxiliarys
     private Date dateInitial;
     private Date dateEnd;
+    private String hourInitial;
+    private String hourEnd;
+    private String minuteInitial;
+    private String minuteEnd;
     private DualListModel<String> users = new DualListModel<>();
 
     //filters
     private String filterDestination;
     private Car filterCar;
     private String filterActivation;
+    private Date filterDate;
 
     public TravelManagedBean() {
     }
@@ -75,6 +82,16 @@ public class TravelManagedBean {
         return "/public/manageTravel/detailsTravel.xhtml?faces-redirect=true";
     }
 
+    public String gotoEditTravel() {
+        if (isThisMyself(actualTravel.getOwner())) {
+            return "/public/manageTravel/EditTravel.xhtml?faces-redirect=true";
+        } else {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Você não têm permissão para editar esta ação", "!"));
+            return "#";
+        }
+    }
+
     public void loadTravels() {
         listOfTravels = new ArrayList(controlTravel.findTravelEntities());
     }
@@ -90,6 +107,13 @@ public class TravelManagedBean {
                 .getResultList();
         listOfTravels = new ArrayList<Travel>(travel);
         return;
+    }
+
+    public void filterByDate() {
+        listOfTravels.clear();
+        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+        List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.dateInitial = :dateInitial", Travel.class).setParameter("dateInitial", filterDate).getResultList();
+        listOfTravels = new ArrayList<>(travel);
     }
 
     public void filterByActivation() {
@@ -115,7 +139,17 @@ public class TravelManagedBean {
     public void filterByCar() {
         listOfTravels.clear();
         List<Travel> travels = actualCar.getTravelList();
-        listOfTravels = new ArrayList<>(travels);
+        List<Travel> filtered = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        Date today = c.getTime();
+        if (filterDate != null) {
+            for (Travel t : travels) {
+                if (t.getDateInitial().compareTo(filterDate) == 0) {
+                    filtered.add(t);
+                }
+            }
+        }
+        listOfTravels = new ArrayList<>(filtered);
     }
 
     // loads
@@ -144,14 +178,19 @@ public class TravelManagedBean {
             usersToAdd.add(controlUser.findUserAccount(a));
         }
         try {
+            String timeInitial = hourInitial + ":" + minuteInitial;
+            String timeEnd = hourEnd + ":" + minuteEnd;
+            actualTravel.setTimeInitial(timeInitial);
+            actualTravel.setTimeEnd(timeEnd);
             actualTravel.setOwner(myself);
+            actualTravel.setDateEnd(dateEnd);
             actualTravel.setUserAccountList(usersToAdd);
             actualTravel.setCarPlate(actualCar);
             if (dateInitial != null) {
                 actualTravel.setDateInitial(dateInitial);
             } else {
-                dateInitial.setTime(System.currentTimeMillis());
-                actualTravel.setDateEnd(dateEnd);
+                Calendar c = Calendar.getInstance();
+                actualTravel.setDateInitial(c.getTime());
 
             }
             actualTravel.setIsDone(false);
@@ -164,6 +203,11 @@ public class TravelManagedBean {
     }
 
     public void submitToThisTrip() {
+        if (actualTravel.getIsRideAllowed() == false) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Esta viagem não permite caronas", "!"));
+            return;
+        }
         List<UserAccount> listToEdit = actualTravel.getUserAccountList();
         try {
             UserAccount toAdd = controlUser.findUserAccount(ManageSessions.getUserId());
@@ -222,8 +266,22 @@ public class TravelManagedBean {
     }
 
     //edits
-    public String editUserAccount() {
+    public String editTravel() {
+        actualTravel = controlTravel.findTravel(actualTravel.getIdTravel());
+
         try {
+            String timeInitial = hourInitial + ":" + minuteInitial;
+            String timeEnd = hourEnd + ":" + minuteEnd;
+            actualTravel.setTimeInitial(timeInitial);
+            actualTravel.setTimeEnd(timeEnd);
+            actualTravel.setDateEnd(dateEnd);
+            actualTravel.setCarPlate(actualCar);
+            if (dateInitial != null) {
+                actualTravel.setDateInitial(dateInitial);
+            } else {
+                Calendar c = Calendar.getInstance();
+                actualTravel.setDateInitial(c.getTime());
+            }
             controlTravel.edit(actualTravel);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -235,7 +293,7 @@ public class TravelManagedBean {
     public void destroyTravels() {
         UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         try {
-            if (myself.getIsAdministrator() || (actualTravel.getOwner() != null && actualTravel.getOwner().equals(myself.getUserLogin()))) {
+            if (myself.getIsAdministrator() || (actualTravel.getOwner() != null && actualTravel.getOwner().getUserLogin().equals(myself.getUserLogin()))) {
                 for (Task t : actualTravel.getTaskList()) {
                     controlTask.destroy(t.getIdTask());
                 }
@@ -390,4 +448,45 @@ public class TravelManagedBean {
     public void setFilterActivation(String filterActivation) {
         this.filterActivation = filterActivation;
     }
+
+    public String getHourInitial() {
+        return hourInitial;
+    }
+
+    public void setHourInitial(String hourInitial) {
+        this.hourInitial = hourInitial;
+    }
+
+    public String getHourEnd() {
+        return hourEnd;
+    }
+
+    public void setHourEnd(String hourEnd) {
+        this.hourEnd = hourEnd;
+    }
+
+    public String getMinuteInitial() {
+        return minuteInitial;
+    }
+
+    public void setMinuteInitial(String minuteInitial) {
+        this.minuteInitial = minuteInitial;
+    }
+
+    public String getMinuteEnd() {
+        return minuteEnd;
+    }
+
+    public void setMinuteEnd(String minuteEnd) {
+        this.minuteEnd = minuteEnd;
+    }
+
+    public Date getFilterDate() {
+        return filterDate;
+    }
+
+    public void setFilterDate(Date filterDate) {
+        this.filterDate = filterDate;
+    }
+
 }

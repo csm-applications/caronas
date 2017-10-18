@@ -12,6 +12,7 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,6 +43,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Travel.findByDescription", query = "SELECT t FROM Travel t WHERE t.description = :description"),
     @NamedQuery(name = "Travel.findByDateInitial", query = "SELECT t FROM Travel t WHERE t.dateInitial = :dateInitial"),
     @NamedQuery(name = "Travel.findByDateEnd", query = "SELECT t FROM Travel t WHERE t.dateEnd = :dateEnd"),
+    @NamedQuery(name = "Travel.findByTimeInitial", query = "SELECT t FROM Travel t WHERE t.timeInitial = :timeInitial"),
+    @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd"),
+    @NamedQuery(name = "Travel.findByIsRideAllowed", query = "SELECT t FROM Travel t WHERE t.isRideAllowed = :isRideAllowed"),
     @NamedQuery(name = "Travel.findByIsDone", query = "SELECT t FROM Travel t WHERE t.isDone = :isDone")})
 public class Travel implements Serializable {
 
@@ -56,14 +60,20 @@ public class Travel implements Serializable {
     private String destination;
     @Column(name = "description")
     private String description;
-    @Basic(optional = false)
+    @Basic(optional = false, fetch = FetchType.EAGER)
     @Column(name = "date_initial")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateInitial;
-    @Basic(optional = false)
+    @Basic(optional = false, fetch = FetchType.EAGER)
     @Column(name = "date_end")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date dateEnd;
+    @Column(name = "time_initial")
+    private String timeInitial;
+    @Column(name = "time_end")
+    private String timeEnd;
+    @Column(name = "isRideAllowed")
+    private Boolean isRideAllowed;
     @Basic(optional = false)
     @Column(name = "isDone")
     private boolean isDone;
@@ -134,6 +144,30 @@ public class Travel implements Serializable {
 
     public void setDateEnd(Date dateEnd) {
         this.dateEnd = dateEnd;
+    }
+
+    public String getTimeInitial() {
+        return timeInitial;
+    }
+
+    public void setTimeInitial(String timeInitial) {
+        this.timeInitial = timeInitial;
+    }
+
+    public String getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(String timeEnd) {
+        this.timeEnd = timeEnd;
+    }
+
+    public Boolean getIsRideAllowed() {
+        return isRideAllowed;
+    }
+
+    public void setIsRideAllowed(Boolean isRideAllowed) {
+        this.isRideAllowed = isRideAllowed;
     }
 
     public boolean getIsDone() {
