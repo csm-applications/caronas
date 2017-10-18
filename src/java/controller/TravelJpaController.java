@@ -52,6 +52,11 @@ public class TravelJpaController implements Serializable {
                 carPlate = em.getReference(carPlate.getClass(), carPlate.getPlate());
                 travel.setCarPlate(carPlate);
             }
+            UserAccount owner = travel.getOwner();
+            if (owner != null) {
+                owner = em.getReference(owner.getClass(), owner.getUserLogin());
+                travel.setOwner(owner);
+            }
             List<UserAccount> attachedUserAccountList = new ArrayList<UserAccount>();
             for (UserAccount userAccountListUserAccountToAttach : travel.getUserAccountList()) {
                 userAccountListUserAccountToAttach = em.getReference(userAccountListUserAccountToAttach.getClass(), userAccountListUserAccountToAttach.getUserLogin());
@@ -68,6 +73,10 @@ public class TravelJpaController implements Serializable {
             if (carPlate != null) {
                 carPlate.getTravelList().add(travel);
                 carPlate = em.merge(carPlate);
+            }
+            if (owner != null) {
+                owner.getTravelList().add(travel);
+                owner = em.merge(owner);
             }
             for (UserAccount userAccountListUserAccount : travel.getUserAccountList()) {
                 userAccountListUserAccount.getTravelList().add(travel);
@@ -98,6 +107,8 @@ public class TravelJpaController implements Serializable {
             Travel persistentTravel = em.find(Travel.class, travel.getIdTravel());
             Car carPlateOld = persistentTravel.getCarPlate();
             Car carPlateNew = travel.getCarPlate();
+            UserAccount ownerOld = persistentTravel.getOwner();
+            UserAccount ownerNew = travel.getOwner();
             List<UserAccount> userAccountListOld = persistentTravel.getUserAccountList();
             List<UserAccount> userAccountListNew = travel.getUserAccountList();
             List<Task> taskListOld = persistentTravel.getTaskList();
@@ -117,6 +128,10 @@ public class TravelJpaController implements Serializable {
             if (carPlateNew != null) {
                 carPlateNew = em.getReference(carPlateNew.getClass(), carPlateNew.getPlate());
                 travel.setCarPlate(carPlateNew);
+            }
+            if (ownerNew != null) {
+                ownerNew = em.getReference(ownerNew.getClass(), ownerNew.getUserLogin());
+                travel.setOwner(ownerNew);
             }
             List<UserAccount> attachedUserAccountListNew = new ArrayList<UserAccount>();
             for (UserAccount userAccountListNewUserAccountToAttach : userAccountListNew) {
@@ -140,6 +155,14 @@ public class TravelJpaController implements Serializable {
             if (carPlateNew != null && !carPlateNew.equals(carPlateOld)) {
                 carPlateNew.getTravelList().add(travel);
                 carPlateNew = em.merge(carPlateNew);
+            }
+            if (ownerOld != null && !ownerOld.equals(ownerNew)) {
+                ownerOld.getTravelList().remove(travel);
+                ownerOld = em.merge(ownerOld);
+            }
+            if (ownerNew != null && !ownerNew.equals(ownerOld)) {
+                ownerNew.getTravelList().add(travel);
+                ownerNew = em.merge(ownerNew);
             }
             for (UserAccount userAccountListOldUserAccount : userAccountListOld) {
                 if (!userAccountListNew.contains(userAccountListOldUserAccount)) {
@@ -208,6 +231,11 @@ public class TravelJpaController implements Serializable {
             if (carPlate != null) {
                 carPlate.getTravelList().remove(travel);
                 carPlate = em.merge(carPlate);
+            }
+            UserAccount owner = travel.getOwner();
+            if (owner != null) {
+                owner.getTravelList().remove(travel);
+                owner = em.merge(owner);
             }
             List<UserAccount> userAccountList = travel.getUserAccountList();
             for (UserAccount userAccountListUserAccount : userAccountList) {

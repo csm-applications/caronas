@@ -84,15 +84,14 @@ public class TravelManagedBean {
     }
 
     //filters
-    
     public void findActiveTravels() {
         EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
-            List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
-                    .getResultList();
-            listOfTravels = new ArrayList<Travel>(travel);
-            return;
+        List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
+                .getResultList();
+        listOfTravels = new ArrayList<Travel>(travel);
+        return;
     }
-    
+
     public void filterByActivation() {
         if ("naoFinalizadas".equals(filterActivation)) {
             EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
@@ -138,21 +137,23 @@ public class TravelManagedBean {
 
     //saves
     public String saveTravels() {
+        UserAccount myself = new UserAccount();
+        myself.setUserLogin(ManageSessions.getUserId());
         List<UserAccount> usersToAdd = new ArrayList<>();
         for (String a : users.getTarget()) {
             usersToAdd.add(controlUser.findUserAccount(a));
         }
         try {
+            actualTravel.setOwner(myself);
             actualTravel.setUserAccountList(usersToAdd);
             actualTravel.setCarPlate(actualCar);
             if (dateInitial != null) {
-                actualTravel.setTimeInitial(dateInitial);
+                actualTravel.setDateInitial(dateInitial);
             } else {
                 dateInitial.setTime(System.currentTimeMillis());
-                actualTravel.setTimeInitial(dateInitial);
+                actualTravel.setDateEnd(dateEnd);
 
             }
-            actualTravel.setTimeEnd(dateEnd);
             actualTravel.setIsDone(false);
             controlTravel.create(actualTravel);
             return gotoListTravels();
@@ -234,7 +235,7 @@ public class TravelManagedBean {
     public void destroyTravels() {
         UserAccount myself = controlUser.findUserAccount(ManageSessions.getUserId());
         try {
-            if (myself.getIsAdministrator()) {
+            if (myself.getIsAdministrator() || (actualTravel.getOwner() != null && actualTravel.getOwner().equals(myself.getUserLogin()))) {
                 for (Task t : actualTravel.getTaskList()) {
                     controlTask.destroy(t.getIdTask());
                 }
@@ -242,7 +243,7 @@ public class TravelManagedBean {
                 loadTravels();
             } else {
                 FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opa! você não tem permissão para remover viagens", "!"));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Opa! você não tem permissão para remover essa viagem", "!"));
                 return;
             }
 

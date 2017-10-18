@@ -1,32 +1,46 @@
 package view;
 
-import AdminPassword.AdminPass;
-import model.UserAccount;
+import AdminInfo.Root;
+import controller.SectorJpaController;
 import javax.faces.bean.ManagedBean;
 import controller.UserAccountJpaController;
+import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
+import model.Sector;
 import model.UserAccount;
 
 @ManagedBean(name = "UserAccountManagedBean")
 @SessionScoped
 public class UserAccountManagedBean {
 
-    private ArrayList<UserAccount> listOfUserAccounts = new ArrayList<>();
     private UserAccount ActualUserAccount = new UserAccount();
+    private Sector actualSector = new Sector();
+
+    //lists
+    private List<Sector> listOfSectors = new ArrayList<>();
+    private ArrayList<UserAccount> listOfUserAccounts = new ArrayList<>();
+
+    //controls
     private UserAccountJpaController controlUserAccount = new UserAccountJpaController(EmProvider.getInstance().getEntityManagerFactory());
+    private SectorJpaController controlSectors = new SectorJpaController(EmProvider.getInstance().getEntityManagerFactory());
 
     //auxiliary
     private String typePassword;
     private String verifyPassword;
-    private String adminPassword;
     private String filterUser;
+
+    //Administrator Access
+    private String adminLogin;
+    private String adminPassword;
 
     public UserAccountManagedBean() {
     }
@@ -57,11 +71,16 @@ public class UserAccountManagedBean {
     }
 
     public String gotoManagePermissions() {
-        return "/managePermissions.xhtml?faces-redirect=true";
+        return "/Admin/managePermissions.xhtml?faces-redirect=true";
     }
 
     public String gotoEditPermissions() {
         return "/editPermissions.xhtml?faces-redirect=true";
+    }
+
+    //loads
+    public void loadSectors() {
+        listOfSectors = new ArrayList(controlSectors.findSectorEntities());
     }
 
     public void loadUserAccounts() {
@@ -92,6 +111,14 @@ public class UserAccountManagedBean {
         return isLogado;
     }
 
+    public boolean adminIsLoggedIn() {
+        boolean isLogado = false;
+        if (ManageSessions.getLoggedAdmin() != null) {
+            isLogado = true;
+        }
+        return isLogado;
+    }
+
     public String validateUsernamePassword() {
         if (validateUser(ActualUserAccount)) {
             HttpSession session = ManageSessions.getSession();
@@ -104,12 +131,22 @@ public class UserAccountManagedBean {
         }
     }
 
+    public String validateAdminUser() {
+        if (Root.adminPass.equals(adminPassword) && Root.adminLogin.equals(adminLogin)) {
+            HttpSession ses = ManageSessions.getSession();
+            ses.setAttribute("adminid", Root.adminLogin);
+            return gotoManagePermissions();
+        } else {
+            return "#";
+        }
+    }
+
     public String logout() {
         HttpSession session = ManageSessions.getSession();
         session.invalidate();
         return "/index?faces-redirect=true";
     }
-
+    
     public boolean validateUser(UserAccount comparar) {
         UserAccount validate = controlUserAccount.findUserAccount(ActualUserAccount.getUserLogin());
         if (validate == null) {
@@ -123,6 +160,7 @@ public class UserAccountManagedBean {
         return false;
     }
 
+    //saves
     public String saveUserAccount() {
         try {
             if (typePassword != null && typePassword.equals(verifyPassword)) {
@@ -143,9 +181,16 @@ public class UserAccountManagedBean {
         return "#";
     }
 
+    public void createSector() {
+        controlSectors.create(actualSector);
+        actualSector = new Sector();
+        loadSectors();
+    }
+
+    //edits
     public String editPermissions() {
         try {
-            if (AdminPass.adminPass.equals(adminPassword)) {
+            if (Root.adminPass.equals(adminPassword)) {
                 controlUserAccount.edit(ActualUserAccount);
                 adminPassword = "";
             } else {
@@ -171,8 +216,9 @@ public class UserAccountManagedBean {
         return gotoListUsers();
     }
 
-    public String destroyUserAccounts() throws NonexistentEntityException {
-        if (AdminPass.adminPass.equals(adminPassword)) {
+    //destroys
+    public String destroyUserAccounts() throws NonexistentEntityException, IllegalOrphanException {
+        if (Root.adminPass.equals(adminPassword)) {
             controlUserAccount.destroy(ActualUserAccount.getUserLogin());
             adminPassword = "";
             return gotoManagePermissions();
@@ -183,11 +229,18 @@ public class UserAccountManagedBean {
         return "#";
     }
 
-    public String UserMessage() {
-        String userName = ManageSessions.getUserName();
-        return "Olá " + userName;
+    public void destroySectors() {
+        try {
+            controlSectors.destroy(actualSector.getIdSector());
+            loadSectors();
+        } catch (IllegalOrphanException ex) {
+            Logger.getLogger(UserAccountManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(UserAccountManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    //getsets
     public UserAccount getActualUserAccount() {
         return ActualUserAccount;
     }
@@ -220,6 +273,14 @@ public class UserAccountManagedBean {
         this.verifyPassword = verifyPassword;
     }
 
+    public String getAdminLogin() {
+        return adminLogin;
+    }
+
+    public void setAdminLogin(String adminLogin) {
+        this.adminLogin = adminLogin;
+    }
+
     public String getAdminPassword() {
         return adminPassword;
     }
@@ -235,4 +296,21 @@ public class UserAccountManagedBean {
     public void setFilterUser(String filterUser) {
         this.filterUser = filterUser;
     }
+
+    public List<Sector> getListOfSectors() {
+        return listOfSectors;
+    }
+
+    public void setListOfSectors(List<Sector> listOfSectors) {
+        this.listOfSectors = listOfSectors;
+    }
+
+    public Sector getActualSector() {
+        return actualSector;
+    }
+
+    public void setActualSector(Sector actualSector) {
+        this.actualSector = actualSector;
+    }
+
 }

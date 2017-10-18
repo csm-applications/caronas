@@ -5,6 +5,7 @@
  */
 package controller;
 
+import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
 import controller.exceptions.PreexistingEntityException;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import model.Sector;
 import model.Travel;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +44,18 @@ public class UserAccountJpaController implements Serializable {
         if (userAccount.getTaskList() == null) {
             userAccount.setTaskList(new ArrayList<Task>());
         }
+        if (userAccount.getTravelList1() == null) {
+            userAccount.setTravelList1(new ArrayList<Travel>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Sector sectoridSector = userAccount.getSectoridSector();
+            if (sectoridSector != null) {
+                sectoridSector = em.getReference(sectoridSector.getClass(), sectoridSector.getIdSector());
+                userAccount.setSectoridSector(sectoridSector);
+            }
             List<Travel> attachedTravelList = new ArrayList<Travel>();
             for (Travel travelListTravelToAttach : userAccount.getTravelList()) {
                 travelListTravelToAttach = em.getReference(travelListTravelToAttach.getClass(), travelListTravelToAttach.getIdTravel());
@@ -58,7 +68,17 @@ public class UserAccountJpaController implements Serializable {
                 attachedTaskList.add(taskListTaskToAttach);
             }
             userAccount.setTaskList(attachedTaskList);
+            List<Travel> attachedTravelList1 = new ArrayList<Travel>();
+            for (Travel travelList1TravelToAttach : userAccount.getTravelList1()) {
+                travelList1TravelToAttach = em.getReference(travelList1TravelToAttach.getClass(), travelList1TravelToAttach.getIdTravel());
+                attachedTravelList1.add(travelList1TravelToAttach);
+            }
+            userAccount.setTravelList1(attachedTravelList1);
             em.persist(userAccount);
+            if (sectoridSector != null) {
+                sectoridSector.getUserAccountList().add(userAccount);
+                sectoridSector = em.merge(sectoridSector);
+            }
             for (Travel travelListTravel : userAccount.getTravelList()) {
                 travelListTravel.getUserAccountList().add(userAccount);
                 travelListTravel = em.merge(travelListTravel);
@@ -70,6 +90,15 @@ public class UserAccountJpaController implements Serializable {
                 if (oldUseraccountuserLoginOfTaskListTask != null) {
                     oldUseraccountuserLoginOfTaskListTask.getTaskList().remove(taskListTask);
                     oldUseraccountuserLoginOfTaskListTask = em.merge(oldUseraccountuserLoginOfTaskListTask);
+                }
+            }
+            for (Travel travelList1Travel : userAccount.getTravelList1()) {
+                UserAccount oldOwnerOfTravelList1Travel = travelList1Travel.getOwner();
+                travelList1Travel.setOwner(userAccount);
+                travelList1Travel = em.merge(travelList1Travel);
+                if (oldOwnerOfTravelList1Travel != null) {
+                    oldOwnerOfTravelList1Travel.getTravelList1().remove(travelList1Travel);
+                    oldOwnerOfTravelList1Travel = em.merge(oldOwnerOfTravelList1Travel);
                 }
             }
             em.getTransaction().commit();
@@ -85,16 +114,36 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public void edit(UserAccount userAccount) throws NonexistentEntityException, Exception {
+    public void edit(UserAccount userAccount) throws IllegalOrphanException, NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             UserAccount persistentUserAccount = em.find(UserAccount.class, userAccount.getUserLogin());
+            Sector sectoridSectorOld = persistentUserAccount.getSectoridSector();
+            Sector sectoridSectorNew = userAccount.getSectoridSector();
             List<Travel> travelListOld = persistentUserAccount.getTravelList();
             List<Travel> travelListNew = userAccount.getTravelList();
             List<Task> taskListOld = persistentUserAccount.getTaskList();
             List<Task> taskListNew = userAccount.getTaskList();
+            List<Travel> travelList1Old = persistentUserAccount.getTravelList1();
+            List<Travel> travelList1New = userAccount.getTravelList1();
+            List<String> illegalOrphanMessages = null;
+            for (Travel travelList1OldTravel : travelList1Old) {
+                if (!travelList1New.contains(travelList1OldTravel)) {
+                    if (illegalOrphanMessages == null) {
+                        illegalOrphanMessages = new ArrayList<String>();
+                    }
+                    illegalOrphanMessages.add("You must retain Travel " + travelList1OldTravel + " since its owner field is not nullable.");
+                }
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            if (sectoridSectorNew != null) {
+                sectoridSectorNew = em.getReference(sectoridSectorNew.getClass(), sectoridSectorNew.getIdSector());
+                userAccount.setSectoridSector(sectoridSectorNew);
+            }
             List<Travel> attachedTravelListNew = new ArrayList<Travel>();
             for (Travel travelListNewTravelToAttach : travelListNew) {
                 travelListNewTravelToAttach = em.getReference(travelListNewTravelToAttach.getClass(), travelListNewTravelToAttach.getIdTravel());
@@ -109,7 +158,22 @@ public class UserAccountJpaController implements Serializable {
             }
             taskListNew = attachedTaskListNew;
             userAccount.setTaskList(taskListNew);
+            List<Travel> attachedTravelList1New = new ArrayList<Travel>();
+            for (Travel travelList1NewTravelToAttach : travelList1New) {
+                travelList1NewTravelToAttach = em.getReference(travelList1NewTravelToAttach.getClass(), travelList1NewTravelToAttach.getIdTravel());
+                attachedTravelList1New.add(travelList1NewTravelToAttach);
+            }
+            travelList1New = attachedTravelList1New;
+            userAccount.setTravelList1(travelList1New);
             userAccount = em.merge(userAccount);
+            if (sectoridSectorOld != null && !sectoridSectorOld.equals(sectoridSectorNew)) {
+                sectoridSectorOld.getUserAccountList().remove(userAccount);
+                sectoridSectorOld = em.merge(sectoridSectorOld);
+            }
+            if (sectoridSectorNew != null && !sectoridSectorNew.equals(sectoridSectorOld)) {
+                sectoridSectorNew.getUserAccountList().add(userAccount);
+                sectoridSectorNew = em.merge(sectoridSectorNew);
+            }
             for (Travel travelListOldTravel : travelListOld) {
                 if (!travelListNew.contains(travelListOldTravel)) {
                     travelListOldTravel.getUserAccountList().remove(userAccount);
@@ -139,6 +203,17 @@ public class UserAccountJpaController implements Serializable {
                     }
                 }
             }
+            for (Travel travelList1NewTravel : travelList1New) {
+                if (!travelList1Old.contains(travelList1NewTravel)) {
+                    UserAccount oldOwnerOfTravelList1NewTravel = travelList1NewTravel.getOwner();
+                    travelList1NewTravel.setOwner(userAccount);
+                    travelList1NewTravel = em.merge(travelList1NewTravel);
+                    if (oldOwnerOfTravelList1NewTravel != null && !oldOwnerOfTravelList1NewTravel.equals(userAccount)) {
+                        oldOwnerOfTravelList1NewTravel.getTravelList1().remove(travelList1NewTravel);
+                        oldOwnerOfTravelList1NewTravel = em.merge(oldOwnerOfTravelList1NewTravel);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -156,7 +231,7 @@ public class UserAccountJpaController implements Serializable {
         }
     }
 
-    public void destroy(String id) throws NonexistentEntityException {
+    public void destroy(String id) throws IllegalOrphanException, NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -167,6 +242,22 @@ public class UserAccountJpaController implements Serializable {
                 userAccount.getUserLogin();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The userAccount with id " + id + " no longer exists.", enfe);
+            }
+            List<String> illegalOrphanMessages = null;
+            List<Travel> travelList1OrphanCheck = userAccount.getTravelList1();
+            for (Travel travelList1OrphanCheckTravel : travelList1OrphanCheck) {
+                if (illegalOrphanMessages == null) {
+                    illegalOrphanMessages = new ArrayList<String>();
+                }
+                illegalOrphanMessages.add("This UserAccount (" + userAccount + ") cannot be destroyed since the Travel " + travelList1OrphanCheckTravel + " in its travelList1 field has a non-nullable owner field.");
+            }
+            if (illegalOrphanMessages != null) {
+                throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Sector sectoridSector = userAccount.getSectoridSector();
+            if (sectoridSector != null) {
+                sectoridSector.getUserAccountList().remove(userAccount);
+                sectoridSector = em.merge(sectoridSector);
             }
             List<Travel> travelList = userAccount.getTravelList();
             for (Travel travelListTravel : travelList) {

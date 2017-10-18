@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -48,6 +50,9 @@ public class Car implements Serializable {
     @Basic(optional = false)
     @Column(name = "situation")
     private String situation;
+    @JoinColumn(name = "Sector_idSector", referencedColumnName = "idSector")
+    @ManyToOne(optional = false)
+    private Sector sectoridSector;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "carPlate")
     private List<Travel> travelList;
 
@@ -95,6 +100,14 @@ public class Car implements Serializable {
 
     public void setSituation(String situation) {
         this.situation = situation;
+    }
+
+    public Sector getSectoridSector() {
+        return sectoridSector;
+    }
+
+    public void setSectoridSector(Sector sectoridSector) {
+        this.sectoridSector = sectoridSector;
     }
 
     @XmlTransient

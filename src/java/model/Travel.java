@@ -40,8 +40,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Travel.findByIdTravel", query = "SELECT t FROM Travel t WHERE t.idTravel = :idTravel"),
     @NamedQuery(name = "Travel.findByDestination", query = "SELECT t FROM Travel t WHERE t.destination = :destination"),
     @NamedQuery(name = "Travel.findByDescription", query = "SELECT t FROM Travel t WHERE t.description = :description"),
-    @NamedQuery(name = "Travel.findByTimeInitial", query = "SELECT t FROM Travel t WHERE t.timeInitial = :timeInitial"),
-    @NamedQuery(name = "Travel.findByTimeEnd", query = "SELECT t FROM Travel t WHERE t.timeEnd = :timeEnd"),
+    @NamedQuery(name = "Travel.findByDateInitial", query = "SELECT t FROM Travel t WHERE t.dateInitial = :dateInitial"),
+    @NamedQuery(name = "Travel.findByDateEnd", query = "SELECT t FROM Travel t WHERE t.dateEnd = :dateEnd"),
     @NamedQuery(name = "Travel.findByIsDone", query = "SELECT t FROM Travel t WHERE t.isDone = :isDone")})
 public class Travel implements Serializable {
 
@@ -57,13 +57,13 @@ public class Travel implements Serializable {
     @Column(name = "description")
     private String description;
     @Basic(optional = false)
-    @Column(name = "time_initial")
-    @Temporal(TemporalType.DATE)
-    private Date timeInitial;
+    @Column(name = "date_initial")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateInitial;
     @Basic(optional = false)
-    @Column(name = "time_end")
-    @Temporal(TemporalType.DATE)
-    private Date timeEnd;
+    @Column(name = "date_end")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateEnd;
     @Basic(optional = false)
     @Column(name = "isDone")
     private boolean isDone;
@@ -77,6 +77,9 @@ public class Travel implements Serializable {
     @JoinColumn(name = "car_plate", referencedColumnName = "plate")
     @ManyToOne(optional = false)
     private Car carPlate;
+    @JoinColumn(name = "owner", referencedColumnName = "userLogin")
+    @ManyToOne(optional = false)
+    private UserAccount owner;
 
     public Travel() {
     }
@@ -85,11 +88,11 @@ public class Travel implements Serializable {
         this.idTravel = idTravel;
     }
 
-    public Travel(Integer idTravel, String destination, Date timeInitial, Date timeEnd, boolean isDone) {
+    public Travel(Integer idTravel, String destination, Date dateInitial, Date dateEnd, boolean isDone) {
         this.idTravel = idTravel;
         this.destination = destination;
-        this.timeInitial = timeInitial;
-        this.timeEnd = timeEnd;
+        this.dateInitial = dateInitial;
+        this.dateEnd = dateEnd;
         this.isDone = isDone;
     }
 
@@ -117,20 +120,20 @@ public class Travel implements Serializable {
         this.description = description;
     }
 
-    public Date getTimeInitial() {
-        return timeInitial;
+    public Date getDateInitial() {
+        return dateInitial;
     }
 
-    public void setTimeInitial(Date timeInitial) {
-        this.timeInitial = timeInitial;
+    public void setDateInitial(Date dateInitial) {
+        this.dateInitial = dateInitial;
     }
 
-    public Date getTimeEnd() {
-        return timeEnd;
+    public Date getDateEnd() {
+        return dateEnd;
     }
 
-    public void setTimeEnd(Date timeEnd) {
-        this.timeEnd = timeEnd;
+    public void setDateEnd(Date dateEnd) {
+        this.dateEnd = dateEnd;
     }
 
     public boolean getIsDone() {
@@ -165,6 +168,14 @@ public class Travel implements Serializable {
 
     public void setCarPlate(Car carPlate) {
         this.carPlate = carPlate;
+    }
+
+    public UserAccount getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserAccount owner) {
+        this.owner = owner;
     }
 
     @Override

@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import model.Sector;
 import model.Travel;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,11 @@ public class CarJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Sector sectoridSector = car.getSectoridSector();
+            if (sectoridSector != null) {
+                sectoridSector = em.getReference(sectoridSector.getClass(), sectoridSector.getIdSector());
+                car.setSectoridSector(sectoridSector);
+            }
             List<Travel> attachedTravelList = new ArrayList<Travel>();
             for (Travel travelListTravelToAttach : car.getTravelList()) {
                 travelListTravelToAttach = em.getReference(travelListTravelToAttach.getClass(), travelListTravelToAttach.getIdTravel());
@@ -50,6 +56,10 @@ public class CarJpaController implements Serializable {
             }
             car.setTravelList(attachedTravelList);
             em.persist(car);
+            if (sectoridSector != null) {
+                sectoridSector.getCarList().add(car);
+                sectoridSector = em.merge(sectoridSector);
+            }
             for (Travel travelListTravel : car.getTravelList()) {
                 Car oldCarPlateOfTravelListTravel = travelListTravel.getCarPlate();
                 travelListTravel.setCarPlate(car);
@@ -78,6 +88,8 @@ public class CarJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Car persistentCar = em.find(Car.class, car.getPlate());
+            Sector sectoridSectorOld = persistentCar.getSectoridSector();
+            Sector sectoridSectorNew = car.getSectoridSector();
             List<Travel> travelListOld = persistentCar.getTravelList();
             List<Travel> travelListNew = car.getTravelList();
             List<String> illegalOrphanMessages = null;
@@ -92,6 +104,10 @@ public class CarJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
+            if (sectoridSectorNew != null) {
+                sectoridSectorNew = em.getReference(sectoridSectorNew.getClass(), sectoridSectorNew.getIdSector());
+                car.setSectoridSector(sectoridSectorNew);
+            }
             List<Travel> attachedTravelListNew = new ArrayList<Travel>();
             for (Travel travelListNewTravelToAttach : travelListNew) {
                 travelListNewTravelToAttach = em.getReference(travelListNewTravelToAttach.getClass(), travelListNewTravelToAttach.getIdTravel());
@@ -100,6 +116,14 @@ public class CarJpaController implements Serializable {
             travelListNew = attachedTravelListNew;
             car.setTravelList(travelListNew);
             car = em.merge(car);
+            if (sectoridSectorOld != null && !sectoridSectorOld.equals(sectoridSectorNew)) {
+                sectoridSectorOld.getCarList().remove(car);
+                sectoridSectorOld = em.merge(sectoridSectorOld);
+            }
+            if (sectoridSectorNew != null && !sectoridSectorNew.equals(sectoridSectorOld)) {
+                sectoridSectorNew.getCarList().add(car);
+                sectoridSectorNew = em.merge(sectoridSectorNew);
+            }
             for (Travel travelListNewTravel : travelListNew) {
                 if (!travelListOld.contains(travelListNewTravel)) {
                     Car oldCarPlateOfTravelListNewTravel = travelListNewTravel.getCarPlate();
@@ -150,6 +174,11 @@ public class CarJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            Sector sectoridSector = car.getSectoridSector();
+            if (sectoridSector != null) {
+                sectoridSector.getCarList().remove(car);
+                sectoridSector = em.merge(sectoridSector);
             }
             em.remove(car);
             em.getTransaction().commit();

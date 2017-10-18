@@ -4,15 +4,41 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:j="http://xmlns.jcp.org/jsp/jstl/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite">
     <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
     <ui:include src="../includes/NavBar.xhtml"/>
+    <f:metadata>
+        <f:viewAction action="#{CarManagedBean.loadSectors()}"/>
+    </f:metadata>
     <body>
+        <div class="container">
+            <div style="margin-top: 9%">
+                <p:growl autoUpdate="true"/>
+                <h:form id="searchBox" class="form-horizontal">
+                    <div class="jumbotron alert-info">
+                        <h5>Busca</h5>
+                        <div class="row" style="margin-top: 2%" >
+                            <h:outputLabel for="selectTheSector" styleClass="form-control col-sm-2" style="margin-bottom: 0" value="Selecione o Setor"/>
+                            <h:selectOneMenu id="selectTheSector" styleClass="form-control col-sm-10" value="#{CarManagedBean.actualSector}">
+                                <p:ajax update="listOfCars" event="valueChange" listener="#{CarManagedBean.filterBySectors()}"/>
+                                <f:selectItems value="#{CarManagedBean.listOfSectors}" var="set" itemLabel="#{set.name}" itemValue="#{set}"/>
+                                <f:converter converterId="ConvertSectors"/>
+                            </h:selectOneMenu>
 
+                            <h:outputLabel for="selectTheSituation" styleClass="form-control col-sm-2" style="margin-bottom: 0" value="Selecione uma situação"/>
+                            <h:selectOneMenu id="selectTheSituation" styleClass="form-control col-sm-10" value="#{CarManagedBean.filterSituation}">
+                                <p:ajax update="listOfCars" event="valueChange" listener="#{CarManagedBean.filterBySituation()}"/>
+                                <f:selectItem itemLabel="Livre" itemValue="Livre"/>
+                                <f:selectItem itemLabel="Ocupado" itemValue="Ocupado"/>
+                                <f:selectItem itemLabel="em Manutenção" itemValue="Em Manutencao"/>
+                            </h:selectOneMenu>
+                        </div>
 
-        <h:form>
-            <div class="container">
-                <div style="margin-top: 9%">
+                    </div>
+                </h:form>
+                <h:form id="listOfCars">
                     <h:dataTable styleClass="table table-bordered table-hover" value="#{CarManagedBean.listOfCars}" var="car">
                         <h:column >
                             <f:facet name="header">Marca</f:facet>
@@ -27,8 +53,14 @@
                             <h:outputText value="#{car.plate}"/>
                         </h:column>
                         <h:column >
+                            <f:facet name="header">Setor</f:facet>
+                            <h:outputText value="#{car.sectoridSector.name}"/>
+                        </h:column>
+                        <h:column >
                             <f:facet name="header">Situação</f:facet>
-                            <h:outputText value="#{car.situation}"/>
+                            <h:outputText rendered="${car.situation eq 'Livre'}" styleClass="btn btn-success" value="#{car.situation}"/>
+                            <h:outputText rendered="${car.situation eq 'Ocupado'}" styleClass="btn btn-danger" value="#{car.situation}"/>
+                            <h:outputText rendered="${car.situation eq 'Em Manutenção'}" styleClass="btn btn-warning" value="#{car.situation}"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Ações</f:facet>
@@ -40,9 +72,10 @@
                             </p:commandButton>
                         </h:column>
                     </h:dataTable>
-                </div>
+
+                </h:form>
             </div>
-        </h:form>
+        </div>
     </body>
     <ui:include src="../includes/Footer.xhtml"/>
 </html>

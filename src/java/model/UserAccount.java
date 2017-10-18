@@ -8,10 +8,13 @@ package model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -32,7 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "UserAccount.findByPassword", query = "SELECT u FROM UserAccount u WHERE u.password = :password"),
     @NamedQuery(name = "UserAccount.findByUserName", query = "SELECT u FROM UserAccount u WHERE u.userName = :userName"),
     @NamedQuery(name = "UserAccount.findByPhone", query = "SELECT u FROM UserAccount u WHERE u.phone = :phone"),
-    @NamedQuery(name = "UserAccount.findBySector", query = "SELECT u FROM UserAccount u WHERE u.sector = :sector"),
     @NamedQuery(name = "UserAccount.findByEmail", query = "SELECT u FROM UserAccount u WHERE u.email = :email"),
     @NamedQuery(name = "UserAccount.findByIsAdministrator", query = "SELECT u FROM UserAccount u WHERE u.isAdministrator = :isAdministrator")})
 public class UserAccount implements Serializable {
@@ -52,9 +54,6 @@ public class UserAccount implements Serializable {
     @Column(name = "phone")
     private String phone;
     @Basic(optional = false)
-    @Column(name = "sector")
-    private String sector;
-    @Basic(optional = false)
     @Column(name = "email")
     private String email;
     @Column(name = "isAdministrator")
@@ -63,6 +62,11 @@ public class UserAccount implements Serializable {
     private List<Travel> travelList;
     @OneToMany(mappedBy = "useraccountuserLogin")
     private List<Task> taskList;
+    @JoinColumn(name = "Sector_idSector", referencedColumnName = "idSector")
+    @ManyToOne(optional = false)
+    private Sector sectoridSector;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private List<Travel> travelList1;
 
     public UserAccount() {
     }
@@ -71,12 +75,11 @@ public class UserAccount implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public UserAccount(String userLogin, String password, String userName, String phone, String sector, String email) {
+    public UserAccount(String userLogin, String password, String userName, String phone, String email) {
         this.userLogin = userLogin;
         this.password = password;
         this.userName = userName;
         this.phone = phone;
-        this.sector = sector;
         this.email = email;
     }
 
@@ -112,14 +115,6 @@ public class UserAccount implements Serializable {
         this.phone = phone;
     }
 
-    public String getSector() {
-        return sector;
-    }
-
-    public void setSector(String sector) {
-        this.sector = sector;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -152,6 +147,23 @@ public class UserAccount implements Serializable {
 
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
+    }
+
+    public Sector getSectoridSector() {
+        return sectoridSector;
+    }
+
+    public void setSectoridSector(Sector sectoridSector) {
+        this.sectoridSector = sectoridSector;
+    }
+
+    @XmlTransient
+    public List<Travel> getTravelList1() {
+        return travelList1;
+    }
+
+    public void setTravelList1(List<Travel> travelList1) {
+        this.travelList1 = travelList1;
     }
 
     @Override

@@ -22,10 +22,11 @@ public class EmProvider {
 
     public EntityManagerFactory getEntityManagerFactory() {
         if(emf == null) {
+            System.out.println("Factory created");
             emf = Persistence.createEntityManagerFactory(DB_PU);
         }
         if(DEBUG) {
-            System.out.println("factory created on: " + new Date());
+            System.out.println("Em created " + new Date());
         }
         return emf;
     }

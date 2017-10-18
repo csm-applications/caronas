@@ -7,13 +7,13 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:form>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <h:commandLink action="#{travelManagedBean.gotoListTravels()}" class="navbar-brand" >
-                <h:graphicImage alt="carona" name="images/carona.png" class="imgFot" />
-            </h:commandLink>
+
 
             <c:choose>
                 <c:when test="#{UserAccountManagedBean.anyoneLoggedIn}">
-
+                    <h:commandLink action="#{travelManagedBean.gotoListTravels()}" class="navbar-brand" >
+                        <h:graphicImage alt="carona" name="images/carona.png" class="imgFot" />
+                    </h:commandLink>
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item dropdown">
@@ -48,6 +48,9 @@
                     </div>
                 </c:when>
                 <c:when test="#{not UserAccountManagedBean.anyoneLoggedIn}">
+                    <h:commandLink action="/index.xhtml}" class="navbar-brand" >
+                        <h:graphicImage alt="carona" name="images/carona.png" class="imgFot" />
+                    </h:commandLink>
                     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item active">

@@ -33,4 +33,13 @@ public class ManageSessions {
             return null;
         }
     }
+    
+    public static String getLoggedAdmin() {
+        HttpSession session = getSession();
+        if (session != null) {
+            return (String) session.getAttribute("adminid");
+        } else {
+            return null;
+        }
+    }
 }
