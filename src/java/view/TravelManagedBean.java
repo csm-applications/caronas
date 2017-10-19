@@ -72,7 +72,6 @@ public class TravelManagedBean {
     }
 
     public String gotoListTravels() {
-        loadTravels();
         return "/public/manageTravel/ManageTravel.xhtml?faces-redirect=true";
     }
 
@@ -102,11 +101,11 @@ public class TravelManagedBean {
 
     //filters
     public void findActiveTravels() {
+        listOfTravels.clear();
         EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
         List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.isDone = 'false'", Travel.class)
                 .getResultList();
-        listOfTravels = new ArrayList<Travel>(travel);
-        return;
+        listOfTravels = new ArrayList<>(travel);
     }
 
     public void filterByDate() {

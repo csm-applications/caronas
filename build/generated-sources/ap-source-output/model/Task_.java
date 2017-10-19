@@ -6,7 +6,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 import model.Travel;
 import model.UserAccount;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-18T21:54:18")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2017-10-19T09:56:07")
 @StaticMetamodel(Task.class)
 public class Task_ { 
 

@@ -7,18 +7,16 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
+    <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
+
     <f:metadata>
-        <f:viewAction action="#{travelManagedBean.filterByActivation()}"/>
+        <f:viewAction action="#{travelManagedBean.findActiveTravels()}"/>
         <f:viewAction action="#{travelManagedBean.loadCars()}"/>
     </f:metadata>
 
-    <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
     <ui:include src="../includes/NavBar.xhtml"/>
 
     <body>
-
-
-
         <p:growl autoUpdate="true"/>
         <div class="container">
             <div style="margin-top: 10%">
@@ -45,12 +43,13 @@
                                 <f:selectItem itemLabel="Não finalizadas" itemValue="naoFinalizadas"/>
                                 <f:selectItem itemLabel="Todas as viagens" itemValue="todas"/>
                             </h:selectOneMenu>
-                            
+
                             <h:outputLabel for="selectDateToFilter" styleClass="form-control col-sm-2" style="margin-bottom: 0" value="Selecione uma data para filtrar"/>
-                            <p:calendar id="selectDateToFilter" value="#{travelManagedBean.filterDate}" mode="inline">
-                                <p:ajax update="listOftravels" event="dateSelect" listener="#{travelManagedBean.filterByDate()}"/>
-                            </p:calendar>
-                            
+                            <div class="col-sm-10 form-control">
+                                <p:calendar id="selectDateToFilter" value="#{travelManagedBean.filterDate}" mode="inline">
+                                    <p:ajax update="listOftravels" event="dateSelect" listener="#{travelManagedBean.filterByDate()}"/>
+                                </p:calendar>
+                            </div>
                         </div>
 
                     </div>
@@ -79,7 +78,7 @@
                                     </div>
                                 </div>
                             </h:commandLink>
-                            <p:commandButton update="@form" value="Cancelar viagem" icon="ui-icon-close" action="#{travelManagedBean.destroyTravels()}" styleClass="btn btn-danger" style="margin-top: 1%">
+                            <p:commandButton update="@form" value="Excluir viagem" icon="ui-icon-close" action="#{travelManagedBean.destroyTravels()}" styleClass="btn btn-danger" style="margin-top: 1%">
                                 <f:setPropertyActionListener target="#{travelManagedBean.actualTravel}" value="#{trav}"/>
                             </p:commandButton>
 

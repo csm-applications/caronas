@@ -1,14 +1,11 @@
 package view;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import javax.faces.bean.ManagedBean;
 import controller.CarJpaController;
 import controller.SectorJpaController;
 import controller.UserAccountJpaController;
 import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,10 +75,12 @@ public class CarManagedBean {
         for (Car c : listOfCars) {
             List<Travel> listOfTravelByCar = c.getTravelList();
             for (Travel t : listOfTravelByCar) {
-                if (removeTime(t.getDateInitial()).equals(removeTime(today)) && isHappeningNow(t.getTimeInitial(), t.getTimeEnd())) {
-                    c.setSituation("Ocupado");
-                } else {
-                    c.setSituation("Livre");
+                if (!t.getCarPlate().getSituation().equals("Em Manutenção")) {
+                    if (removeTime(t.getDateInitial()).equals(removeTime(today)) && isHappeningNow(t.getTimeInitial(), t.getTimeEnd())) {
+                        c.setSituation("Ocupado");
+                    } else {
+                        c.setSituation("Livre");
+                    }
                 }
                 try {
                     controlCar.edit(c);
@@ -105,35 +104,31 @@ public class CarManagedBean {
     }
 
     public boolean isHappeningNow(String timeInitial, String timeEnd) {
-        
-        
+
         Calendar c = Calendar.getInstance();
         Date now = c.getTime();
-        
+
         //creating timeinitial in date type
         Calendar ti = Calendar.getInstance();
         ti.setTime(now);
-        ti.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeInitial.substring(0,timeInitial.indexOf(":"))));
-        ti.set(Calendar.MINUTE, Integer.parseInt(timeInitial.substring(timeInitial.indexOf(":")+1)));
+        ti.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeInitial.substring(0, timeInitial.indexOf(":"))));
+        ti.set(Calendar.MINUTE, Integer.parseInt(timeInitial.substring(timeInitial.indexOf(":") + 1)));
         ti.set(Calendar.SECOND, 0);
         ti.set(Calendar.MILLISECOND, 0);
-        
+
         //creating timeend in date type
         Calendar te = Calendar.getInstance();
         te.setTime(now);
-        te.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeEnd.substring(0,timeEnd.indexOf(":"))));
-        te.set(Calendar.MINUTE,Integer.parseInt(timeEnd.substring(timeEnd.indexOf(":")+1)));
+        te.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeEnd.substring(0, timeEnd.indexOf(":"))));
+        te.set(Calendar.MINUTE, Integer.parseInt(timeEnd.substring(timeEnd.indexOf(":") + 1)));
         te.set(Calendar.SECOND, 0);
         te.set(Calendar.MILLISECOND, 0);
-        
-        
+
         //today
-        
-        
         if (ti.compareTo(c) < 0 && te.compareTo(c) > 0) {
             return true;
         }
-        
+
         return false;
     }
 

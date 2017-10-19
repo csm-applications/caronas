@@ -19,16 +19,16 @@
                     <h2 style="text-align: center">Detalhes da viagem</h2>
                     <h:graphicImage alt="carona" name="images/travel.jpg" class="travelIconDetails" />
                     <div class="detailsTravelElements">
-                        <div> Carro utilizado: #{travelManagedBean.actualTravel.carPlate.plate}</div>
-                        <div> Destino: #{travelManagedBean.actualTravel.destination}</div>
-                        <div> Descrição: #{travelManagedBean.actualTravel.description}</div>
-                        <div> Início da viagem: 
+                        <div> <strong>Carro utilizado: </strong> #{travelManagedBean.actualTravel.carPlate.plate}</div>
+                        <div> <strong>Destino: </strong>#{travelManagedBean.actualTravel.destination}</div>
+                        <div> <strong>Descrição:</strong> #{travelManagedBean.actualTravel.description}</div>
+                        <div> <strong>Início da viagem: </strong>
                             <h:outputText value="#{travelManagedBean.actualTravel.dateInitial}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
                             #{travelManagedBean.actualTravel.timeInitial}
                         </div>
-                        <div> Fim da viagem: 
+                        <div> <strong>Fim da viagem: </strong>
                             <h:outputText value="#{travelManagedBean.actualTravel.dateEnd}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputText>
@@ -105,7 +105,7 @@
                         <div class="formInsertTask">
 
                             <div >
-                                <h3>Tarefas</h3>
+                                <h5>Tarefas</h5>
                                 <div class="form-group">
                                     <h:inputText  required="true" requiredMessage="É necessário escolher dar um título a sua Tarefa" styleClass="form-control" a:placeholder="Digite o nome da tarefa" value="#{travelManagedBean.actualTask.name}"/>
                                     <h:inputTextarea required="true" requiredMessage="É necessário descrever sua tarefa"     styleClass="form-control" rows="5" a:placeholder="Descreva sua tarefa" value="#{travelManagedBean.actualTask.description}"/>

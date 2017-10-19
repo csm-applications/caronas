@@ -22,7 +22,7 @@
                 <h:inputText  id="inputPassword" class="form-control" a:placeholder="Digite a senha" a:type="password" value="#{UserAccountManagedBean.actualUserAccount.password}" />
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" value="remember-me"/> Lembrar de mim
+                        <input type="checkbox" value="remember-me"/> <p:outputLabel value="Lembrar de mim"/>
                     </label>
                 </div>
                 <h:commandButton class="btn btn-lg btn-primary btn-block" value="Entrar" action="#{UserAccountManagedBean.validateUsernamePassword()}"/>

@@ -8,13 +8,12 @@
 
     <h:form>
         <nav class="navbar navbar-toggleable-md navbar-dark bg-dark">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <h:commandLink styleClass="navbar-brand" value="Caronas" action="/index.xhtml?faces-redirect=true"/>
-
             <c:choose>
                 <c:when test="#{UserAccountManagedBean.anyoneLoggedIn}">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <h:commandLink styleClass="navbar-brand" value="Caronas" action="/public/manageTravel/ManageTravel.xhtml?faces-redirect=true"/>
 
                     <div class="collapse navbar-collapse" id="navbarText">
                         <ul class="navbar-nav mr-auto">
@@ -39,7 +38,7 @@
 
 
                             <li class="nav-item">
-                                  <h5 class="text-white nav-item-personal">Contatos</h5>
+                                <h5 class="text-white nav-item-personal">Contatos</h5>
                                 <h:commandLink styleClass="nav-link" value="Listar" action="#{UserAccountManagedBean.gotoListUsers()}">
                                     <span class="sr-only">#{UserAccountManagedBean.gotoListUsers()}</span>
                                 </h:commandLink>
@@ -59,6 +58,11 @@
                     </div>
                 </c:when>
                 <c:when test="#{not UserAccountManagedBean.anyoneLoggedIn}">
+                    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <h:commandLink styleClass="navbar-brand" value="Caronas" action="/index.xhtml?faces-redirect=true"/>
+
                     <div class="collapse navbar-collapse" id="navbarText">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item active">

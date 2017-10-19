@@ -1,17 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:j="http://xmlns.jcp.org/jsp/jstl/core">
-    <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
+      xmlns:j="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 
     <f:metadata>
         <f:viewAction action="#{CarManagedBean.loadSectors()}"/>
     </f:metadata>
+    
+    <ui:include src="../includes/HeadIncludesPublic.xhtml"/>
+    <ui:include src="../includes/NavBar.xhtml"/>
+
     <body>
-        <ui:include src="../includes/NavBar.xhtml"/>
 
         <div class="container">
             <div class="jumbotron" style="margin-top: 9%">
@@ -43,7 +46,7 @@
                         <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.plate}"/>
                     </div>
                     <div class="form-group">
-                        <h:outputLabel styleClass="form-control" value="Situação"/>
+                        <h:outputLabel styleClass="form-control" value="Setor"/>
                         <h:selectOneMenu styleClass="form-control" value="#{CarManagedBean.actualCar.sectoridSector}">
                             <f:selectItems value="#{CarManagedBean.listOfSectors}" var="sec" itemLabel="#{sec.name}" itemValue="#{sec}"/>
                             <f:converter converterId="ConvertSectors"/>
@@ -57,7 +60,7 @@
                             <f:selectItem itemLabel="Em Manutenção" itemValue="Em Manutenção"/>
                         </h:selectOneMenu>
                     </div>
-                    <h:commandButton styleClass="form-control btn btn-primary" value="Cadastrar" action="#{CarManagedBean.saveCars()}"/>
+                    <p:commandButton styleClass="form-control btn btn-primary" value="Cadastrar" action="#{CarManagedBean.saveCars()}"/>
                 </h:form>
             </div>
         </div>
