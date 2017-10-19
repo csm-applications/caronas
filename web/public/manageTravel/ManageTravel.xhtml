@@ -64,14 +64,14 @@
                                     <h:graphicImage alt="carona" name="images/travel.jpg" class="travelIcon" />
                                 </div>
                                 <div class="right">
-                                    <div>Destino: #{trav.destination}</div>
-                                    <div>Carro: #{trav.carPlate.plate}</div>
-                                    <div>Data de Início:
+                                    <div><strong>Destino:</strong> #{trav.destination}</div>
+                                    <div><strong>Carro: </strong> #{trav.carPlate.brand} - #{trav.carPlate.model} - #{trav.carPlate.plate}</div>
+                                    <div><strong>Data de Início:</strong>
                                         <h:outputText value="#{trav.dateInitial}">
                                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText> #{trav.timeInitial}
                                     </div>
-                                    <div>Data do fim: 
+                                    <div><strong>Data do fim: </strong>
                                         <h:outputText value="#{trav.dateEnd}">
                                             <f:convertDateTime pattern="dd/MM/yyyy"/>
                                         </h:outputText> #{trav.timeEnd}

@@ -13,6 +13,10 @@
             <div class="jumbotron" style="margin-top: 9%">
                 <h:form>
                     <div class="form-group">
+                        <div class="form-group">
+                            <h:outputLabel styleClass="form-control" value="Placa"/>
+                            <h:inputText disabled="true" styleClass="form-control" value="#{CarManagedBean.actualCar.plate}"/>
+                        </div>
                         <h:outputLabel styleClass="form-control" value="Marca do Veículo"/>
                         <h:selectOneMenu styleClass="form-control" value="#{CarManagedBean.actualCar.brand}">
                             <f:selectItem itemLabel="Volkswagen" itemValue="Volkswagen"/>
@@ -31,10 +35,6 @@
                     <div class="form-group">
                         <h:outputLabel styleClass="form-control" value="Modelo do Veículo"/>
                         <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.model}"/>
-                    </div>
-                    <div class="form-group">
-                        <h:outputLabel styleClass="form-control" value="Placa"/>
-                        <h:inputText styleClass="form-control" value="#{CarManagedBean.actualCar.plate}"/>
                     </div>
                     <div class="form-group">
                         <h:outputLabel styleClass="form-control" value="Situação"/>

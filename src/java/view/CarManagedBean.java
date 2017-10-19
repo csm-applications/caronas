@@ -162,6 +162,7 @@ public class CarManagedBean {
     public String editCar() {
         try {
             controlCar.edit(actualCar);
+            loadCars();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

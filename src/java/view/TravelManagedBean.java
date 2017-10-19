@@ -6,7 +6,6 @@ import controller.TravelJpaController;
 import controller.UserAccountJpaController;
 import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -170,6 +169,11 @@ public class TravelManagedBean {
 
     //saves
     public String saveTravels() {
+        if (actualCar.getSituation().equals("Em Manutenção")) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Este carro está em manutenção", "!"));
+            return "#";
+        }
         UserAccount myself = new UserAccount();
         myself.setUserLogin(ManageSessions.getUserId());
         List<UserAccount> usersToAdd = new ArrayList<>();
