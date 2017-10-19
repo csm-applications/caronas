@@ -1,5 +1,6 @@
 package view;
 
+import Util.StringUtils;
 import controller.CarJpaController;
 import controller.TaskJpaController;
 import controller.TravelJpaController;
@@ -65,6 +66,10 @@ public class TravelManagedBean {
 
     public String gotoAddTravel() {
         actualTravel = new Travel();
+        hourInitial = "00";
+        hourEnd = "00";
+        minuteInitial = "00";
+        minuteEnd = "00";
         loadCars();
         loadUsers();
         return "/public/manageTravel/addTravel.xhtml?faces-redirect=true";
@@ -108,10 +113,10 @@ public class TravelManagedBean {
     }
 
     public void filterByDate() {
-        listOfTravels.clear();
-        EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
-        List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.dateInitial = :dateInitial", Travel.class).setParameter("dateInitial", filterDate).getResultList();
-        listOfTravels = new ArrayList<>(travel);
+            listOfTravels.clear();
+            EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
+            List<Travel> travel = em.createQuery("SELECT t FROM Travel t WHERE t.dateInitial = :dateInitial and t.isDone='false'", Travel.class).setParameter("dateInitial", filterDate).getResultList();
+            listOfTravels = new ArrayList<>(travel);
     }
 
     public void filterByActivation() {
@@ -128,26 +133,10 @@ public class TravelManagedBean {
     public void filterTravelsByDestination() {
         listOfTravels.clear();
         EntityManager em = EmProvider.getInstance().getEntityManagerFactory().createEntityManager();
-        List<Travel> travels = em.createQuery("SELECT a FROM Travel a WHERE a.destination LIKE :destination", Travel.class)
+        List<Travel> travels = em.createQuery("SELECT a FROM Travel a WHERE a.destination LIKE :destination and a.isDone='false'", Travel.class)
                 .setParameter("destination", "%" + filterDestination + "%")
                 .getResultList();
         listOfTravels = new ArrayList<>(travels);
-    }
-
-    public void filterByCar() {
-        listOfTravels.clear();
-        List<Travel> travels = actualCar.getTravelList();
-        List<Travel> filtered = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
-        Date today = c.getTime();
-        if (filterDate != null) {
-            for (Travel t : travels) {
-                if (t.getDateInitial().compareTo(filterDate) == 0) {
-                    filtered.add(t);
-                }
-            }
-        }
-        listOfTravels = new ArrayList<>(filtered);
     }
 
     // loads
@@ -180,6 +169,12 @@ public class TravelManagedBean {
         for (String a : users.getTarget()) {
             usersToAdd.add(controlUser.findUserAccount(a));
         }
+
+        hourInitial = StringUtils.treatHoursAndMinutesWithOneDigit(hourInitial);
+        hourEnd = StringUtils.treatHoursAndMinutesWithOneDigit(hourEnd);
+        minuteInitial = StringUtils.treatHoursAndMinutesWithOneDigit(minuteInitial);
+        minuteEnd = StringUtils.treatHoursAndMinutesWithOneDigit(minuteEnd);
+
         try {
             String timeInitial = hourInitial + ":" + minuteInitial;
             String timeEnd = hourEnd + ":" + minuteEnd;
@@ -271,6 +266,11 @@ public class TravelManagedBean {
     //edits
     public String editTravel() {
         actualTravel = controlTravel.findTravel(actualTravel.getIdTravel());
+
+        hourInitial = StringUtils.treatHoursAndMinutesWithOneDigit(hourInitial);
+        hourEnd = StringUtils.treatHoursAndMinutesWithOneDigit(hourEnd);
+        minuteInitial = StringUtils.treatHoursAndMinutesWithOneDigit(minuteInitial);
+        minuteEnd = StringUtils.treatHoursAndMinutesWithOneDigit(minuteEnd);
 
         try {
             String timeInitial = hourInitial + ":" + minuteInitial;

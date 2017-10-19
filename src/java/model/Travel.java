@@ -60,11 +60,11 @@ public class Travel implements Serializable {
     private String destination;
     @Column(name = "description")
     private String description;
-    @Basic(optional = false, fetch = FetchType.EAGER)
+    @Basic(optional = false)
     @Column(name = "date_initial")
     @Temporal(TemporalType.DATE)
     private Date dateInitial;
-    @Basic(optional = false, fetch = FetchType.EAGER)
+    @Basic(optional = false)
     @Column(name = "date_end")
     @Temporal(TemporalType.DATE)
     private Date dateEnd;

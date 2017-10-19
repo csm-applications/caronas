@@ -28,6 +28,7 @@ public class CarManagedBean {
     //lists
     private ArrayList<Car> listOfCars = new ArrayList<>();
     private ArrayList<Sector> listOfSectors = new ArrayList<>();
+    private ArrayList<Travel> listOfTravels = new ArrayList<>();
 
     //actual
     private Sector actualSector = new Sector();
@@ -54,6 +55,11 @@ public class CarManagedBean {
         loadCars();
         return "/public/manageCar/ManageCars.xhtml?faces-redirect=true";
     }
+    
+    public String gotoVisualizeTravels() {
+        filterByCar();
+        return "/public/manageCar/VisualizeTravels.xhtml?faces-redirect=true";
+    }
 
     public String gotoEditCars() {
         UserAccount myself = controlUserAccount.findUserAccount(ManageSessions.getUserId());
@@ -73,6 +79,7 @@ public class CarManagedBean {
         Calendar cal = Calendar.getInstance();
         Date today = cal.getTime();
         for (Car c : listOfCars) {
+            Car cp = c;
             List<Travel> listOfTravelByCar = c.getTravelList();
             for (Travel t : listOfTravelByCar) {
                 if (!t.getCarPlate().getSituation().equals("Em Manutenção")) {
@@ -82,12 +89,14 @@ public class CarManagedBean {
                         c.setSituation("Livre");
                     }
                 }
-                try {
-                    controlCar.edit(c);
-                } catch (NonexistentEntityException ex) {
-                    Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (Exception ex) {
-                    Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                if (cp.getSituation().equals(c.getSituation())) {
+                    try {
+                        controlCar.edit(c);
+                    } catch (NonexistentEntityException ex) {
+                        Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        Logger.getLogger(CarManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         }
@@ -150,6 +159,25 @@ public class CarManagedBean {
         listOfCars = new ArrayList<>(cars);
     }
 
+    public void filterByCar() {
+        listOfTravels.clear();
+        List<Travel> travels = actualCar.getTravelList();
+        List<Travel> filtered = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        Date today = c.getTime();
+        if (today != null) {
+            for (Travel t : travels) {
+                if ((removeTime(t.getDateInitial()).compareTo(removeTime(today)) == 0 
+                        || removeTime(t.getDateInitial()).compareTo(removeTime(today)) > 0) 
+                        && !t.getIsDone()) {
+                    filtered.add(t);
+                }
+            }
+        }
+        listOfTravels = new ArrayList<>(filtered);
+    }
+
+    //saves
     public String saveCars() {
         try {
             controlCar.create(actualCar);
@@ -222,6 +250,14 @@ public class CarManagedBean {
 
     public void setFilterSituation(String filterSituation) {
         this.filterSituation = filterSituation;
+    }
+
+    public ArrayList<Travel> getListOfTravels() {
+        return listOfTravels;
+    }
+
+    public void setListOfTravels(ArrayList<Travel> listOfTravels) {
+        this.listOfTravels = listOfTravels;
     }
 
 }
